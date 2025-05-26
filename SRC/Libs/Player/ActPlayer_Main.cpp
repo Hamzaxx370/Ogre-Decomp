@@ -1,5 +1,8 @@
 #include"ActPlayerBase.cpp"
 #include"../../Main/ActionManager.cpp"
+#include"ActPlayerCtrl.cpp"
+extern PlayerCommand* D_006BA350[];
+
 enum eATTACK_TYPE
 {
 
@@ -43,6 +46,9 @@ class CSysEvictChunk {
     public:
     char unk0[0xB0];
     void Alloc(int);
+    void Ignore(unsigned int);
+    void Hijack(unsigned int);
+    CSysEvictChunk(){};
     // virtual void foo();
 };
 
@@ -4846,5 +4852,7 @@ class CActPlayer: public CActPlayerBase {
     void playerFuncThrowDamageInit();
     void dropArms();
     void playerRideOnAttackPredictSeizeHint();
+    void ScatterTerminate();
+    void playerFuncRideOnThrowInit();
     // virtual int __uciSetLip(void *);
 };

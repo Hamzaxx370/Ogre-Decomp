@@ -47,3 +47,7 @@ typedef int sceVu0IVECTOR[4] __attribute__((aligned (16)));
 typedef int sceVu0IMATRIX[4][4] __attribute__((aligned (16)));
 typedef float sceVu0FVECTOR[4] __attribute__((aligned (16)));
 typedef float sceVu0FMATRIX[4][4] __attribute__((aligned (16)));
+
+unsigned int CheckExpFlag(unsigned int);
+int _ATan(float,float);
+long __gh_memclr32(int,int,int);
