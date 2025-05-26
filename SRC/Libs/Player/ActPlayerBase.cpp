@@ -1,4 +1,4 @@
-#include"..\MAIN\HumanBase.cpp"
+#include"..\..\Main\HumanBase.cpp"
 class CActPlayerBase: public CActHumanBase {
     public:
     // int CActPlayerBase_unk0;
