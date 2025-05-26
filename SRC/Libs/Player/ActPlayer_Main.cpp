@@ -1,4 +1,29 @@
 #include"ActPlayerBase.cpp"
+#include"../../Main/ActionManager.cpp"
+enum eATTACK_TYPE
+{
+
+};
+enum ePREDICT_STRIKES
+{
+
+};
+struct ARMS_POINT_RESULT
+{
+    char unk0[0x10];
+    float unk10[4];
+    short unk20;
+    short unk22;
+    int unk24;
+    short unk28;
+    short unk2A;
+    int unk2C;
+};
+enum eARM_MOT_CTG
+{
+    s = 100000
+};
+
 typedef struct SPlayerInfo {
     int unk0;
     int unk4;
@@ -216,7 +241,8 @@ class CActPlayer: public CActPlayerBase {
     int CActPlayer_unk214;
     int CActPlayer_unk218;
     int CActPlayer_unk21C;
-    int CActPlayer_unk220;
+    short CActPlayer_unk220;
+    short CActPlayer_unk222;
     int CActPlayer_unk224;
     int CActPlayer_unk228;
     int CActPlayer_unk22C;
@@ -245,10 +271,16 @@ class CActPlayer: public CActPlayerBase {
     int CActPlayer_unk288;
     int CActPlayer_unk28C;
     int CActPlayer_unk290;
-    int CActPlayer_unk294;
+    char CActPlayer_unk294;
+    char CActPlayer_unk295;
+    char CActPlayer_unk296;
+    char CActPlayer_unk297;
     int CActPlayer_unk298;
     int CActPlayer_unk29C;
-    int CActPlayer_unk2A0;
+    char CActPlayer_unk2A0;
+    char CActPlayer_unk2A1;
+    char CActPlayer_unk2A2;
+    unsigned char CActPlayer_unk2A3;
     char CActPlayer_unk2A4;
     char CActPlayer_unk2A5;
     char CActPlayer_unk2A6;
@@ -274,14 +306,19 @@ class CActPlayer: public CActPlayerBase {
     int CActPlayer_unk2F0;
     int CActPlayer_unk2F4;
     int CActPlayer_unk2F8;
-    int CActPlayer_unk2FC;
-    int CActPlayer_unk300;
+    short CActPlayer_unk2FC;
+    short CActPlayer_unk2FE;
+    short CActPlayer_unk300;
+    short CActPlayer_unk302;
     int CActPlayer_unk304;
     char CActPlayer_unk308;
     char CActPlayer_unk309;
     char CActPlayer_unk30A;
     char CActPlayer_unk30B;
-    int CActPlayer_unk30C;
+    char CActPlayer_unk30C;
+    char CActPlayer_unk30D;
+    char CActPlayer_unk30E;
+    char CActPlayer_unk30F;
     int CActPlayer_unk310;
     int CActPlayer_unk314;
     char CActPlayer_unk318;
@@ -4799,49 +4836,15 @@ class CActPlayer: public CActPlayerBase {
     virtual void CarryOverInit(int);
     virtual void MotionLoad(void);
     ePLAYERID_STATUS searchStatusFromMTB(eHUMANID_MTB_NORMAL MTB_ID);
+    void playerSetRideOnScatter();
     int playerSetRideOn(eACTPLAYER_RIDEON_INIT);
-    void playerSetRideOnGuard();
     void playerSetRideOnThrow(tag_SHumanSync *, unsigned char);
     void playerSetRideOnSeize();
+    void playerSetRideOnAttack(eATTACK_TYPE arg1);
     void setNextStatus(ePLAYERID_STATUS arg1, int arg2);
+    void playerSetRideOnArmsGet(ARMS_POINT_RESULT* arg1);
+    void playerFuncThrowDamageInit();
+    void dropArms();
+    void playerRideOnAttackPredictSeizeHint();
     // virtual int __uciSetLip(void *);
 };
-//func_00643BB0
-void CActPlayer::playerSetRideOnGuard() {
-    this->unk7E8 = 0;
-    
-    switch (this->unk7D0) {
-        default:
-            this->unk7E9 = 0;
-            break;
-        case 2:
-            this->unk7E9 = 1;
-            break;
-        case 3:
-        case 4:
-        case 16:
-            this->unk7E9 = 2;
-            break;
-        case 7:
-            this->unk7E9 = 3;
-            break;
-        case 14:
-            this->unk7E9 = 4;
-            break;
-    }
-    
-    if (this->unk7E9 == 0) {
-        this->unk7EB = this->unk4FA;
-    } else {
-        this->unk7EB = 0;
-    }
-    
-    this->unk22C4 = 0xC;
-}
-//func_00638980
-void CActPlayer::setNextStatus(ePLAYERID_STATUS arg1, int arg2) {
-    this->unk2304 = arg1;
-    if (arg2 != 0) {
-        this->unk51C = (int) (this->unk51C | 4);
-    }
-}
