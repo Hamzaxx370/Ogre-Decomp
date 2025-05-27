@@ -1,5 +1,5 @@
-#include"..\..\Main\Action.cpp"
-class CActPlayerCtrl : CActBase
+#include"..\..\Main\Action.h"
+class CActPlayerCtrl : public CActBase
 {
     public:
     int CActPlayerCtrl_unk0;
@@ -25,9 +25,10 @@ class CActPlayerCtrl : CActBase
     char CActPlayerCtrl_unk4A;
     char CActPlayerCtrl_unk4B;
     int CActPlayerCtrl_unk4C;
-    CActPlayerCtrl(){};
+    CActPlayerCtrl(CActBase *base, int arg1) : CActBase(base, arg1, (eACTPRIORITY)eACTPRIORITY_NORMAL) {};
     void ClearHistory();
 };
+
 void CActPlayerCtrl::ClearHistory() {
     this->CActPlayerCtrl_unk48 = 0;
     this->CActPlayerCtrl_unk49 = 0;

@@ -48,7 +48,7 @@ public:
     float m_fActSpeedSquareRatio; // offset 0x2128, size 0x4
     unsigned int m_pDrawListBuf[256]; // offset 0x212C, size 0x400
     class CDrawBase * m_pCurrentDraw; // offset 0x252C, size 0x4
-    int GetActiom(long);
+    int GetAction(long);
 };
 enum eACTMODE {
     eACTMODE_NORMAL = 0,
@@ -72,7 +72,7 @@ enum eACTPRIORITY {
     eACTPRIORITY_NORMAL = 2,
     eACTPRIORITY_BOTTOM = 3,
     eACTPRIORITY_NUM = 4,
-    eACTPRIORITY_FORCE_DWORD = 0x7FFFFFFF,
+    eACTPRIORITY_FORCE_DWORD = 2147483647,
 };
 
 enum eACTSPDTYPE {
@@ -148,6 +148,7 @@ class CActBase {
     class CActBase * * m_ppListTypePtr; // offset 0x64, size 0x4
     class CActBase * m_pListTypeNext; // offset 0x68, size 0x4
     enum eFILECATEGORY m_eCategory; // offset 0x6C, size 0x4
+    void DebugSetFileInfo(char *, eFILECATEGORY, char *, unsigned int);
     CActBase();
     CActBase(CActBase *, int, eACTPRIORITY);
     // virtual int ~CActBase()
@@ -158,6 +159,13 @@ class CActBase {
     void SetDeleteSame();
     void insertActionTreeSub(CActBase *base);
     void insertActionTree(CActBase *base);
+    
+    
+};
+class CSysActionSpeed {
+    public:
+    f32 GetActionSpeed(eACTSPDTYPE);
+    f32 GetActionSpeedSquare(eACTSPDTYPE);
 };
 CActMan* D_1572A0;
 int D_0015727C;
