@@ -56,4 +56,84 @@ extern "C"
     char* sprintf(char*, const char*, ...);
     void func_002A0D30(struct CActMan* t);
     int memset(void*, int, int);
+    void* memcpy(void*, void*, unsigned int);
 }
+void _SeedRandom(unsigned int);
+void* TmpBufLock(void);
+void TmpBufUnLock(void);
+unsigned int _Random(void);
+int CalcCRC32(unsigned long, unsigned char *);
+
+typedef enum eSND_OUTPUT {
+    SND_OUTPUT_0 = 0,
+    SND_OUTPUT_1 = 1,
+    SND_OUTPUT_2 = 2,
+} eSND_OUTPUT;
+
+class CTrtSoundPS2 {
+    public:
+    virtual void virt0();
+    virtual void virt2();
+    virtual void virt3();
+    virtual void virt4();
+    virtual void virt5();
+    virtual void virt6();
+    virtual void virt7();
+    virtual void virt8();
+    virtual void virt9();
+    virtual void virt10();
+    virtual void virt11();
+    virtual void virt12();
+    virtual void virt13();
+    virtual void virt14();
+    virtual void virt15();
+    virtual void virt16();
+    virtual void virt17();
+    virtual void virt18();
+    virtual void virt19();
+    virtual void virt20();
+    virtual void virt21();
+    virtual void virt22();
+    virtual void virt23();
+    virtual void virt24();
+    virtual void virt25();
+    virtual void virt26();
+    virtual void virt27();
+    virtual void virt28();
+    virtual void virt29();
+    virtual void virt30();
+    virtual void virt31();
+    virtual void virt32();
+    virtual void virt33();
+    virtual void virt34();
+    virtual void virt35();
+    virtual void virt36();
+    virtual void virt37();
+    virtual void virt38();
+    virtual void virt39();
+    virtual void virt40();
+    virtual void virt41();
+    virtual void virt42();
+    virtual void virt43();
+    virtual void virt44();
+    virtual void virt45();
+    virtual void SetOutput(eSND_OUTPUT);
+};
+
+extern CTrtSoundPS2 *D_00157188;
+
+typedef enum eWIDETV {
+    WIDETV_0 = 0,
+    WIDETV_6 = 6,
+} eWIDETV;
+
+class CActWideTVManager {
+    public:
+    void SetWideTV(eWIDETV);
+};
+
+extern CActWideTVManager *D_00157614;
+
+typedef enum eULTIMATE_BOX_ESTIMATE_RANK {
+
+} eULTIMATE_BOX_ESTIMATE_RANK;
