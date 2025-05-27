@@ -1,4 +1,4 @@
-#define NULL ((void *)0)
+#define NULL (0)
 
 // typedef enum bool {
 //     false,
@@ -51,3 +51,9 @@ typedef float sceVu0FMATRIX[4][4] __attribute__((aligned (16)));
 unsigned int CheckExpFlag(unsigned int);
 int _ATan(float,float);
 long __gh_memclr32(int,int,int);
+extern "C"
+{
+    char* sprintf(char*, const char*, ...);
+    void func_002A0D30(struct CActMan* t);
+    int memset(void*, int, int);
+}

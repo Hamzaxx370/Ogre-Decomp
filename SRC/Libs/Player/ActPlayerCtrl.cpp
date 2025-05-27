@@ -1,4 +1,4 @@
-#include"..\..\Main\Base.cpp"
+#include"..\..\Main\Action.cpp"
 class CActPlayerCtrl : CActBase
 {
     public:

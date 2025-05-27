@@ -1,8 +1,6 @@
 #pragma mpwc_relax on
 
 #define sprintf func_0011D568
-extern "C" char* sprintf(char*, const char*, ...);
-
 const char* D_00153500 = "cdrom0:\\";
 const char* eMEDIA4MODULEID[]
 {
