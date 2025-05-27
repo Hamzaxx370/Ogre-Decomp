@@ -1,8 +1,5 @@
 #include"Module.h"
-CTrtModule TrtModule;
-#define D_00165650 TrtModule
-CTrtModule* TrtModulePtr;
-#define D_00156308 TrtModulePtr
+
 
 static int CreateTrtModule(char const* arg0) {
     CTrtModule* s0;
@@ -19,7 +16,6 @@ int CTrtModule::GetProgRoot(char* outBuf) {
     return 0;
 }
 
-extern const char D_0013A100;
 
 int CTrtModule::GetCRIFilePath(char* outBuf, char const *path) {
     sprintf(outBuf, "%s", path);
@@ -40,10 +36,6 @@ extern "C" {
     bool func_4195D0(char*, const char*, unsigned int);
 }
 
-const char* D_00153510 = "OGREVO4:";
-const char* D_0015350C = "OGREVO3:";
-const char* D_00153508 = "OGREVO2:";
-const char* D_00153504 = "OGREVOL:";
 
 int CTrtModule::GetFilePath(char* outBuf, char const *fname) {
     char tBuf[0x100 + 1]; // 256 + NUL
@@ -72,22 +64,12 @@ int CTrtModule::GetFilePath(char* outBuf, char const *fname) {
     return 0;
 }
 
-extern eMODULEID* D_00136CF0[];
 
 int CTrtModule::GetOverlayFilePath(char* arg1, eMODULEID arg2, unsigned int arg3) {
     sprintf(arg1, &D_0013A100, D_00136CF0[arg2][arg3]);
     return 0;
 }
-//TO DO
-//Put the function entries for moduleinit and moduleend
-extern void* D_0013A0A0[];
-extern void* D_0013A0D0[];
-extern int D_00153490[] = 
-{
-    0x100000,
-    0x167c80,
-    0x62b300,
-};
+
 int CTrtModule::SetOverlay(eMODULEID arg0, unsigned int arg1 , void const * arg2, unsigned int arg3,unsigned int arg4) {
 
     unsigned int  temp_s0;
@@ -111,7 +93,7 @@ int CTrtModule::SetOverlay(eMODULEID arg0, unsigned int arg1 , void const * arg2
     return 0;
 }
 
-char D_00156300;
+
 int CTrtModule::LoadOverlay(eMODULEID* arg0, unsigned int arg1,unsigned int arg2) {
     char sp160[272];
     char sp50[272];
@@ -135,9 +117,3 @@ int CTrtModule::LoadOverlay(eMODULEID* arg0, unsigned int arg1,unsigned int arg2
     return var_s3;
 }                            
 
-#define func_00130030 CTrtModule::GetFilePath
-#define func_00130000 CTrtModule::GetCRIFilePath
-#define func_0012ffd0 CTrtModule::GetProgRoot
-#define func_001301a0 CTrtModule::GetOverlayFilePath
-#define func_001301f0 CTrtModule::SetOverlay
-#define  func_001302f0 CTrtModule::LoadOverlay

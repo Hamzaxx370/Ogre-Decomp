@@ -159,3 +159,6 @@ class CActBase {
     void insertActionTreeSub(CActBase *base);
     void insertActionTree(CActBase *base);
 };
+CActMan* D_1572A0;
+int D_0015727C;
+CSysActionSpeed* D_001572C4;

@@ -178,6 +178,3 @@ class CSysActionSpeed {
     f32 GetActionSpeed(eACTSPDTYPE);
     f32 GetActionSpeedSquare(eACTSPDTYPE);
 };
-CActMan* D_1572A0;
-int D_0015727C;
-CSysActionSpeed* D_001572C4;
