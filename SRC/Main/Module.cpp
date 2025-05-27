@@ -6,18 +6,7 @@ extern "C" char* sprintf(char*, const char*, ...);
 const char* D_00153500 = "cdrom0:\\";
 const char* eMEDIA4MODULEID[]
 {
-    "MAIN.BIN;1"
-    "Media4\\Module\\game.bin",
-    "Media4\\Module\\ufocatcher.bin",
-    "Media4\\Module\\oddoreven.bin",
-    "Media4\\Module\\battingcenter",
-    "Media4\\Module\\cabaret.bin",
-    "Media4\\Module\\pachislot.bin",
-    "Media4\\Module\\carchase.bin",
-    "Media4\\Module\\health.bin",
-    "Media4\\Module\\baccara.bin",
-    "Media4\\Module\\roulette.bin",
-    "Media4\\Module\\blackjack.bin",
+    
 };
 enum eMODULEID
 {

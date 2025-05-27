@@ -1,8 +1,8 @@
 #include"ActPlayerBase.cpp"
 #include"../../Main/ActionManager.cpp"
 #include"ActPlayerCtrl.cpp"
-extern PlayerCommand* D_006BA350[];
-
+#include"ActPlayer_MotionTbl.cpp"
+#include"ActPlayer_Motion.cpp"
 enum eATTACK_TYPE
 {
 
@@ -85,18 +85,6 @@ namespace HumanCollision {
 
 enum eACTPLAYER_RIDEON_INIT {
 
-};
-enum ePLAYERID_STATUS
-{
-
-};
-struct PlayerCommand
-{
-    int Type;
-    //ushort Unk;
-    int Input;
-    int AnimationEntry;
-    int FollowUpIndex;
 };
 class CActPlayer: public CActPlayerBase {
     // size 0x4E90

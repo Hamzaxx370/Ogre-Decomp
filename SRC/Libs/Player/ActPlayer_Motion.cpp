@@ -1,0 +1,4 @@
+enum ePLAYERID_STATUS
+{
+
+};
