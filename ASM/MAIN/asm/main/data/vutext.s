@@ -2,4 +2,4 @@
 
 .section .text, "ax"
 
-.incbin "assets/vutext.textbin.bin"
+.incbin "D:/Decomp/assets/vutext.textbin.bin"

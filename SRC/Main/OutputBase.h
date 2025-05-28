@@ -1,16 +1,4 @@
 #include"Action.h"
-enum eYACT_MODE {
-    eYACT_MODE_NON = 0,
-    eYACT_MODE_YACT = 1,
-    eYACT_MODE_REACTION = 2,
-    eYACT_MODE_WAIT = 3,
-    eYACT_MODE_INVISIBLE = 4,
-    eYACT_MODE_BREAK = 5,
-    eYACT_MODE_YET = 6,
-    eYACT_MODE_NUM = 7,
-    eYACT_MODE_FORCE_DWORD = 2147483647,
-};
-
 class CActOutputBase : public CActBase {
     // total size: 0x88
     public:

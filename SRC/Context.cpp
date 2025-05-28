@@ -137,3 +137,6 @@ extern CActWideTVManager *D_00157614;
 typedef enum eULTIMATE_BOX_ESTIMATE_RANK {
 
 } eULTIMATE_BOX_ESTIMATE_RANK;
+
+void* _MMalloc_ReleaseOgreHi(unsigned int);
+extern void* (*D_15356C)(unsigned int) = &_MMalloc_ReleaseOgreHi;

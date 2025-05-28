@@ -2,4 +2,4 @@
 
 .section .data, "wa"
 
-.incbin "assets/ovl_header.databin.bin"
+.incbin "D:/Decomp/assets/ovl_header.databin.bin"

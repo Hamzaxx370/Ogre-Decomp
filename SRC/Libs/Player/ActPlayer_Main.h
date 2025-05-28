@@ -1,4 +1,5 @@
 #include"../../Main/Action.h"
+#include"../../Main/Evict.h"
 #include"../../Main/Human.h"
 #include"ActPlayerCtrl.cpp"
 #include"ActPlayer_MotionTbl.cpp"
@@ -54,16 +55,6 @@ typedef struct SPlayerInfo {
 typedef struct tag_TRIANGLECOLLISION2{
     int unk0;
 } tag_TRIANGLECOLLISION2;
-
-class CSysEvictChunk {
-    public:
-    char unk0[0xB0];
-    void Alloc(int);
-    void Ignore(unsigned int);
-    void Hijack(unsigned int);
-    CSysEvictChunk(){};
-    // virtual void foo();
-};
 
 class CSysEvictPlayer: public CSysEvictChunk {
     public:
