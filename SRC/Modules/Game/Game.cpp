@@ -1,9 +1,10 @@
 #include"..\..\Libs\Player\LibPlayer.cpp"
+#include"..\..\Libs\Stalker\LibStalker.cpp"
 void ModuleInit_Game()
 {
-    LibInit_Player(void)
-    LibInit_Stalker(void)
-    EnemyInterfaceInit(void)
-    WandererInterfaceInit(void)
+    LibInit_Player();
+    LibInit_Stalker();
+    EnemyInterfaceInit();
+    WandererInterfaceInit();
     return;
 }
