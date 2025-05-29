@@ -1,0 +1,2 @@
+void SystemInit();
+void SystemDest();

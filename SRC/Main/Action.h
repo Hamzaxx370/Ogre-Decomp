@@ -49,6 +49,8 @@ public:
     unsigned int m_pDrawListBuf[256]; // offset 0x212C, size 0x400
     class CDrawBase * m_pCurrentDraw; // offset 0x252C, size 0x4
     int GetAction(long);
+    void Init();
+    int Idle();
 };
 enum eACTMODE {
     eACTMODE_NORMAL = 0,
