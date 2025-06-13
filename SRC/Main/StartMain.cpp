@@ -12,7 +12,7 @@ int main(int argc,char** argv) {
     func_00116638(0);
     func_001003E0();
     CreateTrtModule(argv[0]);
-    D_00156308 -> LoadOverlay(&D_00156308->ModuleID, 1, 0);
+    D_00156308 -> LoadOverlay(&D_00156308->m_ModuleID, 1, 0);
     func_22CCC0();
     func_0012FF80();
     func_001003D0();

@@ -9,7 +9,9 @@ extern int D_153538;
 void func_002D58E0();
 int ogre_main() {
     D_153538 = 0x400000;
+
     SystemInit();
+
     D_157454 = new MTRandom(_Random());
     FadeCtrl::Initialize();
     D_1573A8 = new CPauseManager();
@@ -26,5 +28,6 @@ int ogre_main() {
     FadeCtrl::Finalize();
     delete D_157454;
     SystemDest();
+    
     return 0;
 }

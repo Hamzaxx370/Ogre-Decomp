@@ -5,14 +5,14 @@ static int CreateTrtModule(char const* arg0) {
     CTrtModule* s0;
     TrtModulePtr = &TrtModule;
     s0 = TrtModulePtr;
-    sprintf(s0->buf, D_00153500);
-    s0->ModuleID = (eMODULEID)-1;
+    sprintf(s0->m_Buffer, D_00153500);
+    s0->m_ModuleID = (eMODULEID)-1;
     return 0;
 }
 
 
 int CTrtModule::GetProgRoot(char* outBuf) {
-    sprintf(outBuf, "%s", this->buf);
+    sprintf(outBuf, "%s", this->m_Buffer);
     return 0;
 }
 
@@ -77,7 +77,7 @@ int CTrtModule::SetOverlay(eMODULEID arg0, unsigned int arg1 , void const * arg2
     int temp_v1;
     temp_s0 = arg4;
     if (arg1 == 2) {
-        temp_v1 = this->ModuleID;
+        temp_v1 = this->m_ModuleID;
         if ((temp_v1 != (int)arg2) && (temp_v1 != -1)) {
             ((void (*)())D_0013A0D0[temp_v1])();
         }
@@ -88,7 +88,7 @@ int CTrtModule::SetOverlay(eMODULEID arg0, unsigned int arg1 , void const * arg2
     func_00100350(temp_s1,  temp_s0);
     if (arg1 == 2) {
         ((void (*)())D_0013A0A0[(int)arg2])();
-        this->ModuleID = (eMODULEID)(int)arg2;
+        this->m_ModuleID = (eMODULEID)(int)arg2;
     }
     return 0;
 }
@@ -102,7 +102,7 @@ int CTrtModule::LoadOverlay(eMODULEID* arg0, unsigned int arg1,unsigned int arg2
     int var_s3;
 
     sprintf(sp50, "%s", D_00136CF0[(int)arg0][arg1]);
-    sprintf(sp160, "%s%s", buf, &sp50);
+    sprintf(sp160, "%s%s", m_Buffer, &sp50);
     func_00105420(0);
     var_s3 = 0;
     temp_v0 = func_001002A0(sp160, temp_s1);

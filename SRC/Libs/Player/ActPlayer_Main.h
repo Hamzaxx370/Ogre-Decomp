@@ -4769,7 +4769,7 @@ class CActPlayer: public CActPlayerBase {
     int CActPlayer_unk48EC;
     int CActPlayer_unk48F0;
     int CActPlayer_unk48F4;
-    PlayerCommand* CActPlayer_unk48F8;
+    CPlayerCommand* CActPlayer_unk48F8;
     int CActPlayer_unk48FC;
     int CActPlayer_unk4900;
     int CActPlayer_unk4904;

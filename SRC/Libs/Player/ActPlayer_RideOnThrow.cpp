@@ -1,15 +1,15 @@
 #include "ActPlayer_Main.cpp"
-extern PlayerCommand* D_006BA380[];
-extern PlayerCommand* D_006BA388;
-extern PlayerCommand* D_006BA38C;
-extern PlayerCommand* D_006BA398;
-extern PlayerCommand* D_006BA3A0;
-extern PlayerCommand* D_006BA3A4;
+extern CPlayerCommand* D_006BA380[];
+extern CPlayerCommand* D_006BA388;
+extern CPlayerCommand* D_006BA38C;
+extern CPlayerCommand* D_006BA398;
+extern CPlayerCommand* D_006BA3A0;
+extern CPlayerCommand* D_006BA3A4;
 
 void CActPlayer::playerSetRideOnThrow(tag_SHumanSync * arg1, unsigned char arg2) {
     long temp_a1;
     ePLAYERID_STATUS temp_v0;
-    PlayerCommand* var_v1;
+    CPlayerCommand* var_v1;
 
     if (this->CActPlayer_unk314 == -1) return;
     

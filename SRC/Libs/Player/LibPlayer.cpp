@@ -8,11 +8,11 @@ void LibInit_Player()
 }
 
 void SetPlayer(CActBase* lpParent, SPlayerInfo* lpPlayerInfo) {
-    CActPlayerCtrl* pCtrl = new CActPlayerCtrl(lpParent, 7);
+    CActPlayerCtrl* pCtrl = new CActPlayerCtrl(lpParent, eACTID_PLAYERCTRL);
     if (pCtrl)
         pCtrl->DebugSetFileInfo("CActPlayerCtrl(lpParent, eACTID_PLAYERCTRL)", (eFILECATEGORY)2, "ActPlayerCtrl.cpp", 0x154);
-    
-    CActPlayer* pPlayer = new CActPlayer(lpParent, 8, lpPlayerInfo, 7);
+
+    CActPlayer *pPlayer = new CActPlayer(lpParent, eACTID_PLAYER, lpPlayerInfo, eACTID_PLAYERCTRL);
     if (pPlayer)
         pPlayer->DebugSetFileInfo("CActPlayer(lpParent, eACTID_PLAYER, lpPlayerInfo, eACTID_PLAYERCTRL)", (eFILECATEGORY)2, "ActPlayerCtrl.cpp", 0x156);
 }

@@ -11,8 +11,8 @@ enum eMODULEID
 };
 class CTrtModule {
     public:
-        eMODULEID ModuleID;
-        char buf[0x100];
+        eMODULEID m_ModuleID;
+        char m_Buffer[0x100];
         int GetFilePath(char *, char const *);
         int GetCRIFilePath(char *, char const *);
         int GetProgRoot(char *);

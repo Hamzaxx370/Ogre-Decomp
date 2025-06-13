@@ -1,4 +1,4 @@
-class PlayerCommand
+class CPlayerCommand
 {
     int Type;
     //ushort Unk;
@@ -6,8 +6,8 @@ class PlayerCommand
     int AnimationEntry;
     int FollowUpIndex;
 };
-extern PlayerCommand* D_006BA350[];
-class AnimProp
+extern CPlayerCommand* D_006BA350[];
+class CPlayerMotionProperty
 {
     int Unknown1;
     int Unknown2;
@@ -20,5 +20,5 @@ class AnimProp
     short Damage;
     short HitReaction;
 };
-AnimProp* Properties[] = {
+CPlayerMotionProperty* Properties[] = {
 };
