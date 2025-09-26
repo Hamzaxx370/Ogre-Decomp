@@ -8,7 +8,6 @@
 
 // Includes
 #include "..\ogre_defs.h"
-#include "..\Context.cpp"
 
 // ============================================================================
 //  Class CSystemData
