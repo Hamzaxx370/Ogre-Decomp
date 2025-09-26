@@ -1,0 +1,36 @@
+name: Yakuza (USA) - Main Overlay
+sha1: e62c3570c9b6594f4d146a58cd857b487fdca435
+options:
+  basename: MAIN.BIN
+  target_path: cdrom/MAIN.BIN
+  base_path: ..
+  compiler: MWCCPS2
+  find_file_boundaries: False
+  platform: ps2
+  asm_path: asm/main
+  src_path: SRC
+  rodata_string_guesser_level: 0
+  global_vram_start : 0x00100000
+  gp_value : 0x15b4f0
+  symbol_addrs_path: configs/symbol_addrs.txt
+segments:
+  - [0, databin, ovl_header]
+  - name: main
+    type: code
+    start: 0x80
+    vram: 0x167D00
+    bss_size: 0x9B500
+
+    ld_script_path: main.ld
+    ld_dependencies: True
+    subsegments:
+    - [0x000080, asm, ../libs/main_libs]
+    - [0xCFCB0, cpp, Main/TrtRender]
+    - [0xD3610, asm, Main/Rest]
+    - [0x2B2900, textbin, vutext]
+    - [0x2E8d80, data, data]
+    - [0x372B00, rodata, rodata]
+    - [0x408600, asm, init]
+    - [0x428080, rodata, ctors]
+    - {vram: 0x58FE00, type: bss, name: bss}
+  - [0x428180] # end of file

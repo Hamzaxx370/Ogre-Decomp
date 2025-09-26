@@ -1,0 +1,29 @@
+name: Yakuza (USA) - Game Overlay
+sha1: 1CB54EFEEE3CFC27AF539D8C630571F72368C09C
+options:
+  basename: GAME.BIN
+  target_path: GAME.BIN
+  base_path: .
+  compiler: MWCCPS2
+  find_file_boundaries: False
+  platform: ps2
+  asm_path: asm/game
+  rodata_string_guesser_level: 0
+  global_vram_start : 0x00100000
+  gp_value : 0x15b4f0
+  symbol_addrs_path: GAME_SYMBOLS.TXT
+segments:
+  - [0, databin, ovl_header]
+  - name: game
+    type: code
+    start: 0x80
+    vram: 0x62b380
+    bss_size: 0x7780
+    subsegments:
+    - [0x000080, asm, text]
+    - [0x8DC00, data, data]
+    - [0xA2D00, rodata, rodata]
+    - [0xA9180, asm, init]
+    - [0xAC0F0, rodata, ctors]
+    - {vram: 0x6d7480, type: bss, name: bss}
+  - [0xAC180] # end of file

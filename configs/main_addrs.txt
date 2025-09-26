@@ -1,0 +1,34 @@
+Idle__7CActManFv = 0x29dc20;
+__ct__7CActManFv = 0x29e040;
+__dt__7CActManFv = 0x29dfd0;
+Init__7CActManFv = 0x29df90;
+memset = 0x11A9E0;
+systemInit__7CActManFv = 0x2A0D30;
+__dl__FPv = 0x22CC70;
+systemEnd__7CActManFv = 0x2A0C60;
+__ct__8CActRootFP8CActBasei = 0x302CC0;
+__nw__FUi = 0x22CC80;
+func_0029d980__7CActManF8eACTMODE = 0x29D980;
+idleEnd__7CActManFv = 0x2A0BD0;
+PreloadStageExec2__Fv = 0x2723F0;
+idleMiddle__7CActManFv = 0x2A0BE0;
+execExecYetList__7CActManF8eACTMODE = 0x29C370;
+ActionExec0__7CActManF8eACTMODE = 0x29C120;
+idleStart__7CActManFv = 0x2A0C20;
+func_00188BB0__Fv = 0x188BB0;
+func_106218__Fi = 0x106218;
+PauseManIdle__13CPauseManagerFv = 0x301E80;
+LibraryMain__Fv = 0x274BA0;
+GetFreeActionID__7CActManFlT1 = 0x29c790;
+GetActID__7CActManF8eACTTYPE = 0x29c7f0;
+GetAction__7CActManFl = 0x29c8c0;
+SwapActID__7CActManFlT1 = 0x29c590;
+
+g_lpPauseMan = 0x1573a8;
+g_lpActMan = 0x1572a0;
+
+SetSShaderPaletteChara__13CTrtRenderPS2FPv = 0x239de0
+SetSShaderPaletteStage__13CTrtRenderPS2FPv = 0x239f60
+SetGlarePaletteStage__13CTrtRenderPS2FPv = 0x23a0d0
+
+get_file_name__22CTrtFileParticleCustomFPcUl = 0x239cd0

@@ -1,3 +1,0 @@
-void LibInit_Stalker()
-{
-}

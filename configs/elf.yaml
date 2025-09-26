@@ -1,0 +1,35 @@
+name: Yakuza (USA)
+sha1: 04539a1602db516bf8ac942bba1ce8979a7463c5
+options:
+  basename: SLUS_213.48
+  target_path: cdrom/SLUS_213.48
+  base_path: ..
+  compiler: MWCCPS2
+  find_file_boundaries: False
+  platform: ps2
+  asm_path: asm/elf
+  src_path: SRC
+  rodata_string_guesser_level: 0
+  gp_value : 0x15b4f0
+segments:
+  - [0, databin, elf_header]
+  - name: main
+    type: code
+    start: 0x000200
+    vram: 0x100000
+    bss_size: 0x14080
+    subsegments:
+    - [0x000200, asm, sdk]
+    - [0x0300A0, cpp, Main/StartMain]
+    - [0x030190, cpp, Main/Module]
+    - [0x0305F0, cpp, Main/SaveData]
+    - [0x032480, data, data]
+    - [0x036f00, rodata, rodata]
+    - [0x03A480, asm, init]
+    - [0x03A590, rodata, ctors]
+    - [0x03A5A0, rodata, vtables]
+    - [0x053690, rodata, ovl_groups]
+    - [0x053700, data, sdata]
+    - {vram: 0x156300, type: bss, name: sbss}
+    - {vram: 0x157A00, type: bss, name: bss}
+  - [0x56890]
