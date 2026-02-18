@@ -18,7 +18,7 @@ typedef unsigned char   BYTE;
 typedef unsigned short  USHORT;
 typedef unsigned short  WORD;
 typedef unsigned int    UINT;
-typedef unsigned long   DWORD;
+typedef unsigned int    DWORD;
 
 // Floating point
 typedef float   FLOAT;

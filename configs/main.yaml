@@ -24,9 +24,7 @@ segments:
     ld_script_path: main.ld
     ld_dependencies: True
     subsegments:
-    - [0x000080, asm, ../libs/main_libs]
-    - [0xCFCB0, cpp, Main/TrtRender]
-    - [0xD3610, asm, Main/Rest]
+    - [0x000080, asm, text]
     - [0x2B2900, textbin, vutext]
     - [0x2E8d80, data, data]
     - [0x372B00, rodata, rodata]
