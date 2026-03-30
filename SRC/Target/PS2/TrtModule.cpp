@@ -4,7 +4,7 @@
 // ============================================================================
 
 // Includes
-#include"Module.h"
+#include"../TrtModule.h"
 
 const char* szCDRom0 =  "cdrom0:\\";
 const char* szOgreVol4 = "OGREVO4:";
