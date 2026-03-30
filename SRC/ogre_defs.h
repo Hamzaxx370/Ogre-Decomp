@@ -26,11 +26,21 @@ typedef double  DOUBLE;
 
 // Bool
 typedef bool    BOOL;
+#define TRUE 1
+#define FALSE 0
+#define NULL ((void*)0)
 
 // Pointers
 typedef void*       LPVOID;
 typedef const void* LPCVOID;
 typedef char*       LPSTR;
 typedef const char* LPCSTR;
+
+// Others
+typedef void VOID;
+#define CONST const
+#define VOLATILE volatile;
+#define STATIC static
+#define INLINE inline
 
 #endif

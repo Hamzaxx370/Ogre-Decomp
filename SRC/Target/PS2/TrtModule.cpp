@@ -73,7 +73,7 @@ void (*pModuleEnd[])() =
 };
 
 
-static INT CreateTrtModule(const char* arg0) {
+STATIC INT CreateTrtModule(const char* arg0) {
     CTrtModule* s0;
     D_00156308 = &D_00165650;
     s0 = D_00156308;
@@ -155,7 +155,7 @@ int CTrtModule::SetOverlay(eMODULEID arg0, DWORD arg1 , LPCVOID arg2, DWORD arg3
 INT func_001002A0(LPSTR, LPVOID);   
 CHAR D_00156300;
 
-static inline INT test(LPSTR finalPath, LPVOID ovlAddr, INT loadSize){
+STATIC INLINE INT test(LPSTR finalPath, LPVOID ovlAddr, INT loadSize){
     INT wasLoaded = false;
     loadSize = mwBload(finalPath, ovlAddr);
     if (loadSize > 0x0) {

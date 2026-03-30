@@ -53,16 +53,8 @@ public:
     //~CTrtModule();
 };
 
-static INT CreateTrtModule(LPCSTR);
+STATIC INT CreateTrtModule(LPCSTR);
 CTrtModule D_00165650;
 CTrtModule* D_00156308;
-
-
-#define func_00130030 CTrtModule::GetFilePath
-#define func_00130000 CTrtModule::GetCRIFilePath
-#define func_0012ffd0 CTrtModule::GetProgRoot
-#define func_001301a0 CTrtModule::GetOverlayFilePath
-#define func_001301f0 CTrtModule::SetOverlay
-#define  func_001302f0 CTrtModule::LoadOverlay
 
 #endif
