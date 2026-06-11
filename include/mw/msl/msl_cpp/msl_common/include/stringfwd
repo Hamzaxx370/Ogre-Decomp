@@ -1,0 +1,72 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/04/02 18:29:15 $ 
+ * $Revision: 1.6 $ 
+ */
+ 
+// stringfwd
+
+// WARNING
+//
+// stringfwd is a non-standard, non-portable header.
+//
+// WARNING
+
+#ifndef _STRINGFWD
+#define _STRINGFWD
+
+#include <mslconfig>
+
+#ifndef RC_INVOKED
+
+#pragma options align=native
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#if _MSL_FORCE_ENUMS_ALWAYS_INT
+		#pragma enumsalwaysint on
+	#else
+		#pragma enumsalwaysint off
+	#endif
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#if _MSL_FORCE_ENABLE_BOOL_SUPPORT
+		#pragma bool on
+	#else
+		#pragma bool off
+	#endif
+#endif
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	namespace std {
+#endif
+
+template <class T> class allocator;
+template<class charT> struct char_traits;
+template <class charT, class traits, class Allocator> class basic_string;
+typedef basic_string<char, char_traits<char>, allocator<char> > string;
+#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+	typedef basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> > wstring;
+#endif
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	}  // namespace std
+#endif
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#pragma enumsalwaysint reset
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#pragma bool reset
+#endif
+
+#pragma options align=reset
+
+#endif  // RC_INVOKED
+
+#endif // _STRINGFWD
+
+// hh 991114 Created
+// hh 010402 Removed 68K CMF support

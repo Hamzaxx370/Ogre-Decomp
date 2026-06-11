@@ -3,5 +3,7 @@
 //  Entry point of BlackJack module
 // ============================================================================
 
-void ModuleInit_BlackJack();
-void ModuleEnd_BlackJack();
+#include "defines.h"
+
+VOID ModuleInit_BlackJack();
+VOID ModuleEnd_BlackJack();

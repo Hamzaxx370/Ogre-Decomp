@@ -6,10 +6,10 @@
 // Includes
 #include "OddOrEven.h"
 
-void ModuleInit_OddOrEven() {
+VOID ModuleInit_OddOrEven() {
 
 }
 
-void ModuleEnd_OddOrEven() {
+VOID ModuleEnd_OddOrEven() {
 
 }

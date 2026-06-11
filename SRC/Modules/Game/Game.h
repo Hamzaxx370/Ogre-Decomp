@@ -3,5 +3,7 @@
 //  Entry point of Game module
 // ============================================================================
 
-void ModuleInit_Game();
-void ModuleEnd_Game();
+#include "defines.h"
+
+VOID ModuleInit_Game();
+VOID ModuleEnd_Game();

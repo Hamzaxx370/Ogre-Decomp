@@ -6,10 +6,10 @@
 // Includes
 #include "BattingCenter.h"
 
-void ModuleInit_BattingCenter() {
+VOID ModuleInit_BattingCenter() {
 
 }
 
-void ModuleEnd_BattingCenter() {
+VOID ModuleEnd_BattingCenter() {
 
 }

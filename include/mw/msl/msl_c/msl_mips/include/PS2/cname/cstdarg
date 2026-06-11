@@ -1,0 +1,13 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/09/20 17:22:08 $
+ * $Revision: 1.1 $
+ */
+
+#ifndef _MSL_CSTDARG
+#define _MSL_CSTDARG
+
+#include <stdarg.h>
+
+#endif /* _MSL_CSTDARG */

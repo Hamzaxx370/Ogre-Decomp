@@ -3,5 +3,7 @@
 //  Entry point of Baccara module
 // ============================================================================
 
-void ModuleInit_Baccara();
-void ModuleEnd_Baccara();
+#include "defines.h"
+
+VOID ModuleInit_Baccara();
+VOID ModuleEnd_Baccara();

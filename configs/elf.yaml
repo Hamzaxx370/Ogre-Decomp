@@ -7,10 +7,12 @@ options:
   compiler: MWCCPS2
   find_file_boundaries: False
   platform: ps2
-  asm_path: asm/elf
+  asm_path: asm
   src_path: SRC
   rodata_string_guesser_level: 0
   gp_value : 0x15b4f0
+  symbol_addrs_path: configs/_main_symbols_ghidra.txt
+  ld_script_path: build/linker/elf.ld
 segments:
   - [0, databin, elf_header]
   - name: main
@@ -19,17 +21,41 @@ segments:
     vram: 0x100000
     bss_size: 0x14080
     subsegments:
-    - [0x000200, asm, sdk]
-    - [0x0300A0, cpp, Main/StartMain]
-    - [0x030190, cpp, Main/Module]
-    - [0x0305F0, cpp, Main/SaveData]
-    - [0x032480, data, data]
-    - [0x036f00, rodata, rodata]
+    - [0x000208, asmtu, crt0]
+    - [0x0003E0, asmtu, sdk/gcc_wrapper]
+    - [0x0004A0, asmtu, mw/mwfuncs]
+    - [0x000930, asmtu, sdk/mslgcc_ps2]
+    - [0x0025D0, asmtu, sdk/libgraph]
+    - [0x004720, asmtu, sdk/libdma]
+    - [0x004FA0, asmtu, sdk/libkernl]
+    - [0x011690, asmtu, sdk/libsdr]
+    - [0x011B70, asmtu, sdk/libm]
+    - [0x015508, asmtu, sdk/libcdvd]
+    - [0x017008, asmtu, sdk/libc]
+    - [0x0236E8, asmtu, sdk/libgcc]
+    - [0x0261F0, asmtu, sdk/libpad2]
+    - [0x026AA8, asmtu, sdk/libdbc]
+    - [0x027AD8, asmtu, sdk/libvib]
+    - [0x027C48, asmtu, sdk/libscf]
+    - [0x028340, asmtu, sdk/libmpeg]
+    - [0x02FA60, asmtu, sdk/libipu]
+    - [0x0300A0, asmtu, Main/StartMain]
+    - [0x030180, asmtu, Target/PS2/TrtModule]
+    - [0x030640, asmtu, Main/SystemData]
+    - [0x032480, data, sdk]
+    - [0x036EC0, data, Target/PS2/TrtModule]
+    - [0x036f00, rodata, sdk]
+    - [0x03A0C0, rodata, Main/StartMain]
+    - [0x03A0D8, rodata, Target/PS2/TrtModule]
+    - [0x03A330, rodata, Main/SystemData]
     - [0x03A480, asm, init]
     - [0x03A590, rodata, ctors]
     - [0x03A5A0, rodata, vtables]
     - [0x053690, rodata, ovl_groups]
     - [0x053700, data, sdata]
-    - {vram: 0x156300, type: bss, name: sbss}
+    #- {vram: 0x156300, type: .sbss, Target/PS2/TrtModule}
+    #- {vram: 0x15630c, type: .sbss, rest_sbss}
+    #- {vram: 0x157A00, type: .bss, name: rest_bss}
+    - {vram: 0x156300, type: sbss, name: sbss}
     - {vram: 0x157A00, type: bss, name: bss}
   - [0x56890]

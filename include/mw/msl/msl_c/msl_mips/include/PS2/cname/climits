@@ -1,0 +1,22 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/09/20 17:48:27 $
+ * $Revision: 1.2 $
+ */
+
+#ifndef _MSL_CLIMITS
+#define _MSL_CLIMITS
+
+#ifdef __LONG_MAX__ 
+   #undef __LONG_MAX__ 
+#endif
+
+#define __LONG_MAX__ 9223372036854775807L
+
+#define  LLONG_MIN    LONG_LONG_MIN
+#define  LLONG_MAX    LONG_LONG_MAX
+#define  ULLONG_MAX	  ULONG_LONG_MAX
+#include <limits.h>
+
+#endif /* _MSL_CLIMITS */

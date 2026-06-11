@@ -6,10 +6,10 @@
 // Includes
 #include "Roulette.h"
 
-void ModuleInit_Roulette() {
+VOID ModuleInit_Roulette() {
 
 }
 
-void ModuleEnd_Roulette() {
+VOID ModuleEnd_Roulette() {
 
 }

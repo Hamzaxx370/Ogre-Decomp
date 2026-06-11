@@ -6,10 +6,10 @@
 // Includes
 #include "PachiSlot.h"
 
-void ModuleInit_Pachislot() {
+VOID ModuleInit_Pachislot() {
 
 }
 
-void ModuleEnd_Pachislot() {
+VOID ModuleEnd_Pachislot() {
 
 }

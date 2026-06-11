@@ -1,0 +1,14 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/09/20 17:22:09 $
+ * $Revision: 1.1 $
+ */
+
+#ifndef _MSL_CISO646
+#define _MSL_CISO646
+
+
+#include <iso646.h>
+
+#endif /* _MSL_CISO646 */

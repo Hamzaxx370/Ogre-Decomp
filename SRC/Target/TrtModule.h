@@ -1,60 +1,39 @@
-#ifndef MODULE_H
-#define MODULE_H
+/*
+    TrtModule.h
+*/
 
-// ============================================================================
-//  Module.h
-//  Definition of CTrtModule
-// ============================================================================
+#pragma once
 
 #pragma mpwc_relax on
 
 // Includes
-#include "..\ogre_defs.h"
-
-// Modules
-#include "..\Modules\Baccara\Baccara.h"
-#include "..\Modules\BattingCenter\BattingCenter.h"
-#include "..\Modules\BlackJack\BlackJack.h"
-#include "..\Modules\Cabaret\Cabaret.h"
-#include "..\Modules\CarChase\CarChase.h"
-#include "..\Modules\Game\Game.h"
-#include "..\Modules\Health\Health.h"
-#include "..\Modules\OddOrEven\OddOrEven.h"
-#include "..\Modules\Pachislot\Pachislot.h"
-#include "..\Modules\Roulette\Roulette.h"
-#include "..\Modules\UfoCatcher\UfoCatcher.h"
+#include "defines.h"
 
 enum eMODULEID
 {
-    eMODULEID_GROUP_MAIN,
-    eMODULEID_GROUP_SUB,
-    eMODULEID_FORCE_DWORD = -1,
+    eMODULEID_GROUP_1 = 1,
+    eMODULEID_FORCE_DWORD = 0xFFFFFFFF,
 };
-
-// ============================================================================
-//  Class CTrtModule
-// ============================================================================
 
 class CTrtModule 
 {
 public:
     // Members
     eMODULEID   m_eModuleID;
-    CHAR        m_cBuf[0x100];
+    CHAR        m_cProgRoot[0x100];
 
     // Functions
     INT     GetFilePath(LPSTR, LPCSTR);
-    INT     GetCRIFilePath(LPSTR, LPCSTR);
-    INT     GetProgRoot(LPSTR);
+    INT     GetCRIFilePath(LPSTR szOut, LPCSTR szPath);
+    INT     GetProgRoot(LPSTR szOut);
     INT     GetOverlayFilePath(CHAR *buf, eMODULEID mId, DWORD NameId);
-    INT     SetOverlay(eMODULEID, DWORD, LPCVOID, DWORD,DWORD arg4);
+    INT     SetOverlay(DWORD dwArg1, eMODULEID dwArg2, LPVOID lpArg, DWORD dwArg3);
     BOOL    LoadOverlay(eMODULEID mId, DWORD arg2);
     //CTrtModule() {}
-    //~CTrtModule();
+    ~CTrtModule();
+
+    static CTrtModule* m_pInstance;
 };
 
-STATIC INT CreateTrtModule(LPCSTR);
-CTrtModule D_00165650;
-CTrtModule* D_00156308;
-
-#endif
+INT CreateTrtModule(LPCSTR);
+void ReleaseTrtModule();

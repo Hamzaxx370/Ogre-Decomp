@@ -6,10 +6,10 @@
 // Includes
 #include "CarChase.h"
 
-void ModuleInit_CarChase() {
+VOID ModuleInit_CarChase() {
 
 }
 
-void ModuleEnd_CarChase() {
+VOID ModuleEnd_CarChase() {
 
 }

@@ -3,5 +3,7 @@
 //  Entry point of UfoCatcher module
 // ============================================================================
 
-void ModuleInit_UfoCatcher();
-void ModuleEnd_UfoCatcher();
+#include "defines.h"
+
+VOID ModuleInit_UfoCatcher();
+VOID ModuleEnd_UfoCatcher();

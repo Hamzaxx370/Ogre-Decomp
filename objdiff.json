@@ -1,0 +1,23 @@
+{
+  "custom_make": "python",
+  "custom_args": [
+    "tools/compile_mwcc.py"
+  ],
+  "build_base": true,
+  "build_target": true,
+  "units": [
+    {
+      "name": "SRC/Main/StartMain.cpp",
+      "target_path": "build/obj/StartMain.o",
+      "base_path": "build/match/StartMain.o"
+    },
+    {
+      "name": "SRC/Target/PS2/TrtModule.cpp",
+      "target_path": "build/obj/TrtModule.o",
+      "base_path": "build/match/TrtModule.o",
+      "symbol_mappings": {
+        "SetOverlay__10CTrtModuleF9eMODULEIDUiPCvT2": "SetOverlay__10CTrtModuleFUi9eMODULEIDPvUi"
+      }
+    }
+  ]
+}

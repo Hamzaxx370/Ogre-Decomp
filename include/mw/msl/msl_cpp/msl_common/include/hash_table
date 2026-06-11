@@ -1,0 +1,1018 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/08/07 20:37:34 $ 
+ * $Revision: 1.10 $ 
+ */
+ 
+// hash_table
+
+/*
+	WARNING - WARNING - WARNING
+	
+	This header is NON-STANDARD
+	
+	The classes herein are used to implement <hash_map> and <hash_set>.
+	This header is not meant to be directly used by client code.
+*/
+
+#ifndef _HASH_TABLE
+#define _HASH_TABLE
+
+#include <mslconfig>
+#include <utility>
+#include <memory>
+#include <algorithm>
+#include <functional>
+#include <stdexcept>
+#include <hash_fun>
+#include <msl_utility>
+
+#ifndef RC_INVOKED
+
+#pragma options align=native
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#if _MSL_FORCE_ENUMS_ALWAYS_INT
+		#pragma enumsalwaysint on
+	#else
+		#pragma enumsalwaysint off
+	#endif
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#if _MSL_FORCE_ENABLE_BOOL_SUPPORT
+		#pragma bool on
+	#else
+		#pragma bool off
+	#endif
+#endif
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	namespace Metrowerks {
+#else
+	#ifndef Metrowerks
+		#define Metrowerks
+	#endif
+#endif
+
+template <typename Size>
+class hash_generic
+{
+protected:
+	typedef Size size_type;
+	static size_type next_prime(size_type n);
+};
+
+template <typename Size>
+Size
+hash_generic<Size>::next_prime(size_type n)
+{
+	switch (n)
+	{
+		case 0:
+			return 0;
+		case 1:
+		case 2:
+		case 3:
+			return 3;
+	}
+	if (n % 2 == 0)
+		++n;
+	for (; true; n += 2)
+	{
+		for (size_type i = 3; true; i += 2)
+		{
+			if (n % i == 0)
+				break;
+			if (n / i < i)
+				return n;
+		}
+	}
+}
+
+template <class T, class Allocator>
+class hash_table_deleter
+	: public hash_generic<typename Allocator::size_type>
+{
+	typedef hash_generic<typename Allocator::size_type> base;
+public:	
+	typedef          T                                  value_type;
+	typedef          Allocator                          allocator_type;
+	typedef typename allocator_type::size_type          size_type;
+	typedef typename allocator_type::difference_type    difference_type;
+	typedef typename allocator_type::pointer            pointer;
+	typedef typename allocator_type::const_pointer      const_pointer;
+	typedef typename allocator_type::reference          reference;
+	typedef typename allocator_type::const_reference    const_reference;
+	class                                               iterator;
+	class                                               const_iterator;
+
+	struct node;
+	typedef typename allocator_type::rebind<node>::other node_allocator_type;
+	typedef typename node_allocator_type::pointer        node_ptr;
+	typedef typename node_allocator_type::const_pointer  node_const_ptr;
+
+	struct node
+	{
+		value_type entry_;
+		node_ptr   next_;
+	private:
+		node();
+	};
+
+	typedef typename allocator_type::rebind<node_ptr>::other nodeptr_allocator_type;
+	typedef typename nodeptr_allocator_type::pointer         node_ptr_ptr;
+	typedef typename nodeptr_allocator_type::const_pointer   node_const_ptr_ptr;
+
+	typedef alloc_ptr<node_ptr, nodeptr_allocator_type, size_type> vec_type;
+
+	class iterator
+		: public _STD::iterator<_STD::forward_iterator_tag, value_type,
+		                        difference_type, pointer, reference>
+	{
+	public:
+		iterator() {}
+		reference operator * () const {return node_->entry_;}
+		pointer operator -> () const {return &operator*();}
+		iterator& operator ++ ()
+		{
+			node_ = node_->next_;
+			while (node_ == 0)
+			{
+				if (++bucket_ == bucket_end_)
+					break;
+				node_ = *bucket_;
+			}
+			return *this;
+		}
+		iterator operator ++ (int) {iterator tmp(*this); operator++(); return tmp;}
+		friend bool operator ==(const iterator& x, const iterator& y)
+			{return static_cast<bool>(x.node_ == y.node_);}
+		friend bool operator !=(const iterator& x, const iterator& y)
+			{return static_cast<bool>(x.node_ != y.node_);}
+	private:
+		node_ptr     node_;
+		node_ptr_ptr bucket_;
+		node_ptr_ptr bucket_end_;
+
+		iterator(node_ptr ptr, node_ptr_ptr bucket, node_ptr_ptr bucket_end)
+			: node_(ptr), bucket_(bucket), bucket_end_(bucket_end) {}
+		
+		friend class hash_table_deleter;
+		friend class hash_table_deleter::const_iterator;
+	};
+
+	friend class iterator;
+
+	class const_iterator
+		: public _STD::iterator<_STD::forward_iterator_tag, value_type,
+		                        difference_type, const_pointer, const_reference>
+	{
+	public:
+		const_iterator() {}
+		const_iterator(hash_table_deleter::iterator x)
+			: node_(x.node_), bucket_(x.bucket_), bucket_end_(x.bucket_end_) {}
+		const_reference operator * () const {return node_->entry_;}
+		const_pointer operator -> () const {return &operator*();}
+		const_iterator& operator ++ ()
+		{
+			node_ = node_->next_;
+			while (node_ == 0)
+			{
+				if (++bucket_ == bucket_end_)
+					break;
+				node_ = *bucket_;
+			}
+			return *this;
+		}
+		const_iterator operator ++ (int) {const_iterator tmp(*this); operator++(); return tmp;}
+		friend bool operator ==(const const_iterator& x, const const_iterator& y)
+			{return static_cast<bool>(x.node_ == y.node_);}
+		friend bool operator !=(const const_iterator& x, const const_iterator& y)
+			{return static_cast<bool>(x.node_ != y.node_);}
+	private:
+		node_const_ptr     node_;
+		node_const_ptr_ptr bucket_;
+		node_const_ptr_ptr bucket_end_;
+
+		const_iterator(node_const_ptr ptr, node_const_ptr_ptr bucket, node_const_ptr_ptr bucket_end)
+			: node_(ptr), bucket_(bucket), bucket_end_(bucket_end) {}
+		
+		friend class hash_table_deleter;
+	};
+
+	friend class const_iterator;
+
+	hash_table_deleter(const allocator_type& a);
+	hash_table_deleter(size_type num_buckets, const allocator_type& a);
+	~hash_table_deleter();
+	void clear();
+
+	iterator       begin();
+	iterator       end();
+	const_iterator begin() const;
+	const_iterator end() const;
+	iterator make_iterator(node_ptr p, node_ptr_ptr b, node_ptr_ptr e) {return iterator(p, b, e);}
+	const_iterator make_const_iterator(node_const_ptr p, node_const_ptr_ptr b, node_const_ptr_ptr e) const
+		{return const_iterator(p, b, e);}
+	node_ptr_ptr   to_bucket(iterator& p)   {return p.bucket_;}
+	node_ptr       to_node_ptr(iterator& p) {return p.node_;}
+	size_type collision(const_iterator i) const;
+
+	void erase(iterator position);
+	void erase(const_iterator position);
+	void erase(iterator first, iterator last);
+	void erase(const_iterator first, const_iterator last);
+	void swap(hash_table_deleter& x);
+#ifndef __GNUC__
+	friend void swap<value_type, allocator_type>(hash_table_deleter& x, hash_table_deleter& y);
+#endif
+	node_allocator_type&       node_alloc()       {return buckets_.first();}
+	const node_allocator_type& node_alloc() const {return buckets_.first();}
+
+	vec_type&       buckets()       {return buckets_.second();}
+	const vec_type& buckets() const {return buckets_.second();}
+
+	nodeptr_allocator_type&       nodeptr_alloc()       {return buckets().allocator();}
+	const nodeptr_allocator_type& nodeptr_alloc() const {return buckets().allocator();}
+
+	allocator_type&       alloc()       {return size_.first();}
+	const allocator_type& alloc() const {return size_.first();}
+
+	size_type&       sz()       {return size_.second();}
+	const size_type& sz() const {return size_.second();}
+
+#ifndef __GNUC__
+private:
+#endif
+	compressed_pair<node_allocator_type, vec_type> buckets_;
+	compressed_pair<Allocator, size_type>     size_;
+
+	hash_table_deleter(const hash_table_deleter&);               // Not implemented
+	hash_table_deleter& operator = (const hash_table_deleter&);  // Not implemented
+};
+
+template <class T, class Allocator>
+inline
+hash_table_deleter<T, Allocator>::hash_table_deleter(const allocator_type& a)
+	: buckets_(node_allocator_type(a), vec_type(0, nodeptr_allocator_type(a), 0)),
+	  size_(a, 0)
+{
+}
+
+template <class T, class Allocator>
+hash_table_deleter<T, Allocator>::hash_table_deleter(size_type num_buckets, const allocator_type& a)
+	: buckets_(node_allocator_type(a), vec_type(0, nodeptr_allocator_type(a), 0)),
+	  size_(a, 0)
+{
+	if (num_buckets > 0)
+	{
+		num_buckets = base::next_prime(num_buckets);
+		buckets().reset(nodeptr_alloc().allocate(num_buckets), num_buckets);
+		for (node_ptr_ptr i = buckets().get(); num_buckets > 0; --num_buckets, ++i)
+			nodeptr_alloc().construct(i, 0);
+	}
+}
+
+template <class T, class Allocator>
+inline
+hash_table_deleter<T, Allocator>::~hash_table_deleter()
+{
+	clear();
+}
+
+template <class T, class Allocator>
+void
+hash_table_deleter<T, Allocator>::clear()
+{
+	if (sz() > 0)
+	{
+		node_ptr_ptr i = buckets().get();
+		node_ptr_ptr const e = i + buckets().capacity();
+		for (; i < e; ++i)
+		{
+			node_ptr p = *i;
+			*i = 0;
+			while (p != 0)
+			{
+				node_ptr q = p->next_;
+				alloc().destroy(alloc().address(p->entry_));
+				node_alloc().deallocate(p, 1);
+				p = q;
+			}
+		}
+		sz() = 0;
+	}
+}
+
+template <class T, class Allocator>
+typename hash_table_deleter<T, Allocator>::iterator
+hash_table_deleter<T, Allocator>::begin()
+{
+	node_ptr_ptr i = buckets().get();
+	node_ptr_ptr const e = i + buckets().capacity();
+	for (; i < e; ++i)
+		if (*i != 0)
+			return iterator(*i, i, e);
+	return iterator(0, e, e);
+}
+
+template <class T, class Allocator>
+inline
+typename hash_table_deleter<T, Allocator>::iterator
+hash_table_deleter<T, Allocator>::end()
+{
+	node_ptr_ptr const e = buckets().get() + buckets().capacity();
+	return iterator(0, e, e);
+}
+
+template <class T, class Allocator>
+typename hash_table_deleter<T, Allocator>::const_iterator
+hash_table_deleter<T, Allocator>::begin() const
+{
+	node_const_ptr_ptr i = buckets().get();
+	node_const_ptr_ptr const e = i + buckets().capacity();
+	for (; i < e; ++i)
+		if (*i != 0)
+			return const_iterator(*i, i, e);
+	return const_iterator(0, e, e);
+}
+
+template <class T, class Allocator>
+inline
+typename hash_table_deleter<T, Allocator>::const_iterator
+hash_table_deleter<T, Allocator>::end() const
+{
+	node_const_ptr_ptr const e = buckets().get() + buckets().capacity();
+	return const_iterator(0, e, e);
+}
+
+template <class T, class Allocator>
+typename hash_table_deleter<T, Allocator>::size_type
+hash_table_deleter<T, Allocator>::collision(const_iterator i) const
+{
+	size_type result = 0;
+	node_const_ptr p = *i.bucket_;
+	while (p != 0)
+	{
+		++result;
+		p = p->next_;
+	}
+	return result;
+}
+
+template <class T, class Allocator>
+inline
+void
+hash_table_deleter<T, Allocator>::erase(iterator position)
+{
+	erase(make_const_iterator(position.node_, position.bucket_, position.bucket_end_));
+}
+
+template <class T, class Allocator>
+void
+hash_table_deleter<T, Allocator>::erase(const_iterator position)
+{
+	node_ptr_ptr head = const_cast<node_ptr_ptr>(position.bucket_);
+	while (*head != position.node_)
+		head = nodeptr_alloc().address((*head)->next_);
+	*head = (*head)->next_;
+	alloc().destroy(alloc().address(const_cast<node_ptr>(position.node_)->entry_));
+	node_alloc().deallocate(const_cast<node_ptr>(position.node_), 1);
+	--sz();
+}
+
+template <class T, class Allocator>
+inline
+void
+hash_table_deleter<T, Allocator>::erase(iterator first, iterator last)
+{
+	while (first != last)
+		erase(first++);
+}
+
+template <class T, class Allocator>
+inline
+void
+hash_table_deleter<T, Allocator>::erase(const_iterator first, const_iterator last)
+{
+	while (first != last)
+		erase(first++);
+}
+
+template <class T, class Allocator>
+void
+swap(hash_table_deleter<T, Allocator>& x, hash_table_deleter<T, Allocator>& y)
+{
+	if (&x != &y)
+	{
+		swap(x.buckets_, y.buckets_);
+		swap(x.size_, y.size_);
+	}
+}
+
+template <class T, class Allocator>
+inline
+void
+hash_table_deleter<T, Allocator>::swap(hash_table_deleter& x)
+{
+	Metrowerks::swap(*this, x);
+}
+
+template <class T, class Hash = hash<T>, class Compare = _STD::equal_to<T>,
+          class Allocator = _STD::allocator<T> >
+class hash_table
+	: private hash_table_deleter<T, Allocator>
+{
+	typedef hash_table_deleter<T, Allocator> deleter;
+public:
+	//  types:
+	typedef T                                    value_type;
+	typedef Compare                              value_compare;
+	typedef Hash                                 value_hasher;
+	typedef typename deleter::allocator_type     allocator_type;
+	typedef typename deleter::reference          reference;
+	typedef typename deleter::const_reference    const_reference;
+	typedef typename deleter::size_type          size_type;
+	typedef typename deleter::difference_type    difference_type;
+	typedef typename deleter::pointer            pointer;
+	typedef typename deleter::const_pointer      const_pointer;
+	typedef typename deleter::iterator           iterator;
+	typedef typename deleter::const_iterator     const_iterator;
+
+	//  construction / destruction / assignment
+	hash_table(size_type num_buckets, const value_hasher& hash, const value_compare& comp,
+	           float load_factor_limit, float growth_factor, const allocator_type& a);
+	template <class InputIterator>
+		hash_table(InputIterator first, InputIterator last, bool multi,
+		           size_type num_buckets, const value_hasher& hash, const value_compare& comp,
+		           float load_factor_limit, float growth_factor, const allocator_type& a);
+	hash_table(const hash_table& x);
+	hash_table& operator = (const hash_table& x);
+
+	//  allocator:
+	const allocator_type& get_allocator() const;
+
+	//  iterators:
+	iterator       begin()       {return deleter::begin();}
+	iterator       end()         {return deleter::end();}
+	const_iterator begin() const {return deleter::begin();}
+	const_iterator end() const   {return deleter::end();}
+
+	//  capacity:
+	bool      empty() const {return deleter::sz() == 0;}
+	size_type size() const {return deleter::sz();}
+	size_type max_size() const {return deleter::alloc().max_size();}
+	size_type bucket_count() const {return deleter::buckets().capacity();}
+	size_type bucket_count(size_type num_buckets);
+	float     load_factor() const {return size() == 0 ? 0.F : size() / static_cast<float>(bucket_count());}
+	void      load_factor_limit(float lf);
+	float     load_factor_limit() const;
+	void      growth_factor(float gf);
+	float     growth_factor() const;
+	using deleter::collision;
+
+	//  modifiers:
+	template <class Key, class V> T& find_or_insert(const Key& key);
+	_STD::pair<iterator, bool> insert_one(const value_type& x);
+	iterator                   insert_multi(const value_type& x);
+	iterator                   insert_multi(iterator position, const value_type& x);
+	template <class InputIterator> void insert_one(InputIterator first, InputIterator last);
+	template <class InputIterator> void insert_multi(InputIterator first, InputIterator last);
+	template <class Key> size_type erase_one(const Key& x);
+	template <class Key> size_type erase_multi(const Key& x);
+	void erase(iterator position)                         {deleter::erase(position);}
+	void erase(const_iterator position)                   {deleter::erase(position);}
+	void erase(iterator first, iterator last)             {deleter::erase(first, last);}
+	void erase(const_iterator first, const_iterator last) {deleter::erase(first, last);}
+	void swap(hash_table& x);
+	using deleter::clear;
+
+	//  observers:
+	const value_compare& value_comp() const {return comp();}
+	const value_hasher&  value_hash() const {return hash();}
+
+	//  set operations:
+	template <class Key> iterator       find(const Key& x);
+	template <class Key> const_iterator find(const Key& x) const;
+	template <class Key> size_type count_one(const Key& x) const;
+	template <class Key> size_type count_multi(const Key& x) const;
+
+	template <class Key> _STD::pair<iterator, iterator>             equal_range(const Key& x);
+	template <class Key> _STD::pair<const_iterator, const_iterator> equal_range(const Key& x) const;
+#ifndef __GNUC__
+private:
+#endif
+	compressed_pair<value_hasher, float>  load_factor_;
+	compressed_pair<value_compare, float> growth_factor_;
+
+	typedef typename deleter::node node;
+	typedef typename deleter::node_allocator_type node_allocator_type;
+	typedef typename deleter::vec_type vec_type;
+
+	value_hasher&       hash()       {return load_factor_.first();}
+	const value_hasher& hash() const {return load_factor_.first();}
+
+	value_compare&       comp()       {return growth_factor_.first();}
+	const value_compare& comp() const {return growth_factor_.first();}
+
+	void check_for_valid_factors();
+#ifndef __GNUC__
+	friend void swap<T, Hash, Compare, Allocator>(hash_table& x, hash_table& y);
+#endif
+};
+
+// hash_table Implementation
+
+template <class T, class Hash, class Compare, class Allocator>
+hash_table<T, Hash, Compare, Allocator>::hash_table(size_type num_buckets,
+		const value_hasher& hash, const value_compare& comp,
+		float load_factor_limit, float growth_factor, const allocator_type& a)
+	: deleter(num_buckets, a),
+	  load_factor_(hash, load_factor_limit),
+	  growth_factor_(comp, growth_factor)
+{
+	check_for_valid_factors();
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class InputIterator>
+hash_table<T, Hash, Compare, Allocator>::hash_table(InputIterator first, InputIterator last,
+		bool multi, size_type num_buckets, const value_hasher& hash, const value_compare& comp,
+		float load_factor_limit, float growth_factor, const allocator_type& a)
+	: deleter(num_buckets, a),
+	  load_factor_(hash, load_factor_limit),
+	  growth_factor_(comp, growth_factor)
+{
+	check_for_valid_factors();
+	if (multi)
+		insert_multi(first, last);
+	else
+		insert_one(first, last);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+hash_table<T, Hash, Compare, Allocator>::hash_table(const hash_table& x)
+	: deleter(x.bucket_count(), x.alloc()),
+	  load_factor_(x.load_factor_),
+	  growth_factor_(x.growth_factor_)
+{
+	if (x.size() > 0)
+	{
+		alloc_ptr<node, node_allocator_type&> ap(0, deleter::node_alloc());
+		for (size_type i = 0; i < deleter::buckets().capacity(); ++i)
+		{
+			typename deleter::node_ptr_ptr head = deleter::nodeptr_alloc().address(deleter::buckets()[i]);
+			for (typename deleter::node_ptr p = x.buckets()[i]; p != 0; p = p->next_)
+			{
+				ap.reset(deleter::node_alloc().allocate(1));
+				deleter::alloc().construct(deleter::alloc().address(ap->entry_), p->entry_);
+				ap->next_ = 0;
+				*head = ap.release();
+				head = deleter::nodeptr_alloc().address((*head)->next_);
+				++deleter::sz();
+			}
+		}
+	}
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+hash_table<T, Hash, Compare, Allocator>&
+hash_table<T, Hash, Compare, Allocator>::operator = (const hash_table& x)
+{
+	if (this != &x)
+	{
+		deleter::clear();
+		if (deleter::buckets().capacity() != x.buckets().capacity())
+		{
+			deleter::buckets().reset(0, 0);
+			size_type n = x.buckets().capacity();
+			deleter::buckets().reset(deleter::nodeptr_alloc().allocate(n), n);
+			for (typename deleter::node_ptr_ptr i = deleter::buckets().get(); n > 0; --n, ++i)
+				deleter::nodeptr_alloc().construct(i, 0);
+		}
+		hash() = x.hash();
+		comp() = x.comp();
+		load_factor_.second() = x.load_factor_limit();
+		growth_factor_.second() = x.growth_factor();
+		if (x.size() > 0)
+		{
+			alloc_ptr<node, node_allocator_type&> ap(0, deleter::node_alloc());
+			for (size_type i = 0; i < deleter::buckets().capacity(); ++i)
+			{
+				typename deleter::node_ptr_ptr head = deleter::nodeptr_alloc().address(deleter::buckets()[i]);
+				for (typename deleter::node_ptr p = x.buckets()[i]; p != 0; p = p->next_)
+				{
+					ap.reset(deleter::node_alloc().allocate(1));
+					deleter::alloc().construct(deleter::alloc().address(ap->entry_), p->entry_);
+					ap->next_ = 0;
+					*head = ap.release();
+					head = deleter::nodeptr_alloc().address((*head)->next_);
+					++deleter::sz();
+				}
+			}
+		}
+	}
+	return *this;
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+inline
+const typename hash_table<T, Hash, Compare, Allocator>::allocator_type&
+hash_table<T, Hash, Compare, Allocator>::get_allocator() const
+{
+	return deleter::alloc();
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+void 
+hash_table<T, Hash, Compare, Allocator>::load_factor_limit(float lf)
+{
+	if (lf <= 0)
+	#ifndef _MSL_NO_EXCEPTIONS
+		throw _STD::out_of_range("hash_table::load_factor_limit must be positive");
+	#else
+		_STD::__msl_error("hash_table::load_factor_limit must be positive");
+	#endif
+	if (lf < load_factor_.second())
+	{
+		load_factor_.second() = lf;
+		bucket_count(bucket_count());
+	}
+	else
+		load_factor_.second() = lf;
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+inline
+float
+hash_table<T, Hash, Compare, Allocator>::load_factor_limit() const
+{
+	return load_factor_.second();
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+inline
+void
+hash_table<T, Hash, Compare, Allocator>::growth_factor(float gf)
+{
+	if (gf <= 1)
+	#ifndef _MSL_NO_EXCEPTIONS
+		throw _STD::out_of_range("hash_table::growth_factor must be greater than 1");
+	#else
+		_STD::__msl_error("hash_table::growth_factor must be greater than 1");
+	#endif
+	growth_factor_.second() = gf;
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+inline
+float
+hash_table<T, Hash, Compare, Allocator>::growth_factor() const
+{
+	return growth_factor_.second();
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key, class V>
+T&
+hash_table<T, Hash, Compare, Allocator>::find_or_insert(const Key& key)
+{
+	if (!empty())
+	{
+		const size_type nb = deleter::buckets().capacity();
+		typename deleter::node_ptr_ptr i = deleter::buckets().get();
+		typename deleter::node_ptr_ptr const e = i + nb;
+		i += hash()(key) % nb;
+		typename deleter::node_ptr j = *i;
+		while (j != 0 && !comp()(j->entry_, key))
+			j = j->next_;
+		if (j != 0)
+			return j->entry_;
+	}
+	return *insert_one(value_type(key, V())).first;
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+_STD::pair<typename hash_table<T, Hash, Compare, Allocator>::iterator, bool>
+hash_table<T, Hash, Compare, Allocator>::insert_one(const value_type& x)
+{
+	if ((size()+1) > deleter::buckets().capacity() * load_factor_limit())
+	{
+		size_type cap = deleter::buckets().capacity();
+		size_type new_size = static_cast<size_type>(cap * growth_factor());
+		if (new_size <= cap)
+			new_size = cap + 2;
+		bucket_count(new_size);
+	}
+	const size_type nb = deleter::buckets().capacity();
+	typename deleter::node_ptr_ptr const b = deleter::buckets().get() + hash()(x) % nb;
+	typename deleter::node_ptr_ptr const e = deleter::buckets().get() + nb;
+	typename deleter::node_ptr_ptr head = b;
+	for (; *head != 0; head = deleter::nodeptr_alloc().address((*head)->next_))
+	{
+		if (comp()((*head)->entry_, x))
+			return _STD::pair<iterator, bool>(deleter::make_iterator(*head, b, e), false);
+	}
+	alloc_ptr<node, node_allocator_type&> ap(deleter::node_alloc().allocate(1), deleter::node_alloc());
+	deleter::alloc().construct(deleter::alloc().address(ap->entry_), x);
+	ap->next_ = 0;
+	*head = ap.release();
+	++deleter::sz();
+	return _STD::pair<iterator, bool>(deleter::make_iterator(*head, b, e), true);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+typename hash_table<T, Hash, Compare, Allocator>::iterator
+hash_table<T, Hash, Compare, Allocator>::insert_multi(const value_type& x)
+{
+	if ((size()+1) > deleter::buckets().capacity() * load_factor_limit())
+	{
+		size_type cap = deleter::buckets().capacity();
+		size_type new_size = static_cast<size_type>(cap * growth_factor());
+		if (new_size <= cap)
+			new_size = cap + 2;
+		bucket_count(new_size);
+	}
+	const size_type nb = deleter::buckets().capacity();
+	typename deleter::node_ptr_ptr const b = deleter::buckets().get() + hash()(x) % nb;
+	typename deleter::node_ptr_ptr const e = deleter::buckets().get() + nb;
+	typename deleter::node_ptr_ptr head = b;
+	bool found_equal = false;
+	for (; *head != 0; head = deleter::nodeptr_alloc().address((*head)->next_))
+	{
+		if (found_equal ^ comp()((*head)->entry_, x))
+		{
+			if (!found_equal)
+				found_equal = true;
+			else
+				break;
+		}
+	}
+	alloc_ptr<node, node_allocator_type&> ap(deleter::node_alloc().allocate(1), deleter::node_alloc());
+	deleter::alloc().construct(deleter::alloc().address(ap->entry_), x);
+	ap->next_ = *head;
+	*head = ap.release();
+	++deleter::sz();
+	return deleter::make_iterator(*head, b, e);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+typename hash_table<T, Hash, Compare, Allocator>::iterator
+hash_table<T, Hash, Compare, Allocator>::insert_multi(iterator p, const value_type& x)
+{
+	if (!comp()(*p, x))
+		return insert_multi(x);
+	typename deleter::node_ptr n = to_node_ptr(p);
+	if ((size()+1) > deleter::buckets().capacity() * load_factor_limit())
+	{
+		size_type cap = deleter::buckets().capacity();
+		size_type new_size = static_cast<size_type>(cap * growth_factor());
+		if (new_size <= cap)
+			new_size = cap + 2;
+		bucket_count(new_size);
+	}
+	const size_type nb = deleter::buckets().capacity();
+	typename deleter::node_ptr_ptr const b = deleter::buckets().get() + hash()(x) % nb;
+	typename deleter::node_ptr_ptr const e = deleter::buckets().get() + nb;
+	typename deleter::node_ptr_ptr head = b;
+	for (; *head != n; head = deleter::nodeptr_alloc().address((*head)->next_))
+		{}
+	alloc_ptr<node, node_allocator_type&> ap(deleter::node_alloc().allocate(1), deleter::node_alloc());
+	deleter::alloc().construct(deleter::alloc().address(ap->entry_), x);
+	ap->next_ = *head;
+	*head = ap.release();
+	++deleter::sz();
+	return deleter::make_iterator(*head, b, e);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class InputIterator>
+inline
+void
+hash_table<T, Hash, Compare, Allocator>::insert_one(InputIterator first, InputIterator last)
+{
+	for (; first != last; ++first)
+		insert_one(*first);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class InputIterator>
+inline
+void
+hash_table<T, Hash, Compare, Allocator>::insert_multi(InputIterator first, InputIterator last)
+{
+	for (; first != last; ++first)
+		insert_multi(*first);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+typename hash_table<T, Hash, Compare, Allocator>::size_type
+hash_table<T, Hash, Compare, Allocator>::erase_one(const Key& x)
+{
+	iterator i = find(x);
+	if (i == end())
+		return 0;
+	erase(i);
+	return 1;
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+typename hash_table<T, Hash, Compare, Allocator>::size_type
+hash_table<T, Hash, Compare, Allocator>::erase_multi(const Key& x)
+{
+	_STD::pair<iterator, iterator> i = equal_range(x);
+	size_type result = static_cast<size_type>(_STD::distance(i.first, i.second));
+	erase(i.first, i.second);
+	return result;
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+void
+swap(hash_table<T, Hash, Compare, Allocator>& x, hash_table<T, Hash, Compare, Allocator>& y)
+{
+	if (&x != &y)
+	{
+		swap(static_cast<hash_table_deleter<T, Allocator>&>(x),
+		     static_cast<hash_table_deleter<T, Allocator>&>(y));
+		swap(x.load_factor_, y.load_factor_);
+		swap(x.growth_factor_, y.growth_factor_);
+	}
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+inline
+void
+hash_table<T, Hash, Compare, Allocator>::swap(hash_table& x)
+{
+	swap(*this, x);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+typename hash_table<T, Hash, Compare, Allocator>::iterator
+hash_table<T, Hash, Compare, Allocator>::find(const Key& x)
+{
+	if (empty())
+		return end();
+	const size_type nb = deleter::buckets().capacity();
+	typename deleter::node_ptr_ptr i = deleter::buckets().get();
+	typename deleter::node_ptr_ptr const e = i + nb;
+	i += hash()(x) % nb;
+	typename deleter::node_ptr j = *i;
+	while (j != 0 && !comp()(j->entry_, x))
+		j = j->next_;
+	return j != 0 ? deleter::make_iterator(j, i, e) : end();
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+typename hash_table<T, Hash, Compare, Allocator>::const_iterator
+hash_table<T, Hash, Compare, Allocator>::find(const Key& x) const
+{
+	return const_cast<hash_table&>(*this).find(x);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+inline
+typename hash_table<T, Hash, Compare, Allocator>::size_type
+hash_table<T, Hash, Compare, Allocator>::count_one(const Key& x) const
+{
+	return size_type(!(find(x) == end()));
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+inline
+typename hash_table<T, Hash, Compare, Allocator>::size_type
+hash_table<T, Hash, Compare, Allocator>::count_multi(const Key& x) const
+{
+	_STD::pair<const_iterator, const_iterator> i = equal_range(x);
+	return static_cast<size_type>(_STD::distance(i.first, i.second));
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+typename hash_table_deleter<T, Allocator>::size_type
+hash_table<T, Hash, Compare, Allocator>::bucket_count(size_type n)
+{
+	const size_type nb = deleter::buckets().capacity();
+	n = deleter::next_prime(n);
+	if (n == 0 && size() > 0 || size() > n * load_factor_limit())
+		n = deleter::next_prime(static_cast<size_type>(size() / load_factor_limit()) + 1);
+	if (n != nb)
+	{
+		hash_table_deleter<value_type, allocator_type> ap(n, deleter::alloc());
+		typename deleter::node_ptr_ptr const a = ap.buckets().get();
+		typename deleter::node_ptr_ptr i = deleter::buckets().get();
+		typename deleter::node_ptr_ptr const e = i + nb;
+		for (; i < e; ++i)
+		{
+			while (*i != 0)
+			{
+				typename deleter::node_ptr_ptr dst = a + hash()((*i)->entry_) % n;
+				while (*dst != 0)
+					dst = deleter::nodeptr_alloc().address((*dst)->next_);
+				*dst = *i;
+				*i = (*i)->next_;
+				(*dst)->next_ = 0;
+				--deleter::sz();
+				++ap.sz();
+			}
+		}
+		ap.swap(*this);
+	}
+	return n;
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+_STD::pair<typename hash_table<T, Hash, Compare, Allocator>::iterator,
+           typename hash_table<T, Hash, Compare, Allocator>::iterator>
+hash_table<T, Hash, Compare, Allocator>::equal_range(const Key& x)
+{
+	typedef _STD::pair<iterator, iterator> Result;
+	if (empty())
+		goto notfound;
+	{
+	const size_type nb = deleter::buckets().capacity();
+	typename deleter::node_ptr_ptr i = deleter::buckets().get();
+	typename deleter::node_ptr_ptr const e = i + nb;
+	i += hash()(x) % nb;
+	typename deleter::node_ptr j = *i;
+	if (j == 0)
+		goto notfound;
+	while (j != 0 && !comp()(j->entry_, x))
+		j = j->next_;
+	if (j == 0)
+		goto notfound;
+	typename deleter::node_ptr j2p = j;
+	typename deleter::node_ptr j2 = j2p->next_;
+	while (j2 != 0 && comp()(j2->entry_, x))
+	{
+		j2p = j2;
+		j2 = j2->next_;
+	}
+	return Result(deleter::make_iterator(j, i, e), ++deleter::make_iterator(j2p, i, e));
+	}
+notfound:
+	return Result(end(), end());
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+template <class Key>
+inline
+_STD::pair<typename hash_table<T, Hash, Compare, Allocator>::const_iterator,
+           typename hash_table<T, Hash, Compare, Allocator>::const_iterator>
+hash_table<T, Hash, Compare, Allocator>::equal_range(const Key& x) const
+{
+	return const_cast<hash_table&>(*this).equal_range(x);
+}
+
+template <class T, class Hash, class Compare, class Allocator>
+void
+hash_table<T, Hash, Compare, Allocator>::check_for_valid_factors()
+{
+	if (load_factor_limit() <= 0)
+	#ifndef _MSL_NO_EXCEPTIONS
+		throw _STD::out_of_range("hash_table::load_factor_limit must be positive");
+	#else
+		_STD::__msl_error("hash_table::load_factor_limit must be positive");
+	#endif
+	if (growth_factor() <= 1)
+	#ifndef _MSL_NO_EXCEPTIONS
+		throw _STD::out_of_range("hash_table::growth_factor must be greater than 1");
+	#else
+		_STD::__msl_error("hash_table::growth_factor must be greater than 1");
+	#endif
+}
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	} // namespace Metrowerks
+#endif
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#pragma enumsalwaysint reset
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#pragma bool reset
+#endif
+
+#pragma options align=reset
+
+#endif // RC_INVOKED
+
+#endif  // _HASH_TABLE
+
+// hh 991120 Created
+// hh 001011 Fixed typename bug in hash_table_deleter
+// hh 010125 Removed dependence on <slist>
+// hh 010125 Added dependence on <utility> and <memory>
+// hh 010125 Fixed up for gcc compatability
+// hh 010125 Fixed bug in equal_range: jumping over variable constructor
+// hh 010402 Removed 68K CMF support
+// hh 010727 Fixed a few name lookup bugs for the 2.5 fe

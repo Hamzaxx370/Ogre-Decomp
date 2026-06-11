@@ -3,5 +3,7 @@
 //  Entry point of OddOrEven module
 // ============================================================================
 
-void ModuleInit_OddOrEven();
-void ModuleEnd_OddOrEven();
+#include "defines.h"
+
+VOID ModuleInit_OddOrEven();
+VOID ModuleEnd_OddOrEven();

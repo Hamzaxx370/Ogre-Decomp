@@ -1,0 +1,13 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/09/20 17:22:09 $
+ * $Revision: 1.1 $
+ */
+
+#ifndef _MSL_CSETJMP
+#define _MSL_CSETJMP
+
+#include <setjmp.h>
+
+#endif /* _MSL_CSETJMP */

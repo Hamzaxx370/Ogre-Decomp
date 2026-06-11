@@ -3,5 +3,7 @@
 //  Entry point of Roulette module
 // ============================================================================
 
-void ModuleInit_Roulette();
-void ModuleEnd_Roulette();
+#include "defines.h"
+
+VOID ModuleInit_Roulette();
+VOID ModuleEnd_Roulette();

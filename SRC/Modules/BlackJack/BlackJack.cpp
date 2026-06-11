@@ -6,10 +6,10 @@
 // Includes
 #include "BlackJack.h"
 
-void ModuleInit_BlackJack() {
+VOID ModuleInit_BlackJack() {
 
 }
 
-void ModuleEnd_BlackJack() {
+VOID ModuleEnd_BlackJack() {
 
 }

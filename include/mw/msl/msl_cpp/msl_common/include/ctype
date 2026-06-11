@@ -1,0 +1,375 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/10/10 19:47:55 $ 
+ * $Revision: 1.8 $ 
+ */
+
+// ctype
+
+#ifndef _CTYPE
+#define _CTYPE
+
+#include <mslconfig>
+
+#ifndef _MSL_NO_IO
+
+#include <localeimp>
+#include <cctype>
+#include <vector>
+
+#ifndef RC_INVOKED
+
+#pragma options align=native
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#if _MSL_FORCE_ENUMS_ALWAYS_INT
+		#pragma enumsalwaysint on
+	#else
+		#pragma enumsalwaysint off
+	#endif
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#if _MSL_FORCE_ENABLE_BOOL_SUPPORT
+		#pragma bool on
+	#else
+		#pragma bool off
+	#endif
+#endif
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	namespace std {
+#endif
+
+#ifndef _MSL_NO_LOCALE
+
+class ctype_base
+{
+public:
+	typedef unsigned char mask;
+	static const mask space  = 0x06;
+	static const mask print  = 0xDC;
+	static const mask cntrl  = 0x03;
+	static const mask upper  = 0x80;
+	static const mask lower  = 0x40;
+	static const mask alpha  = lower | upper;
+	static const mask digit  = 0x10;
+	static const mask punct  = 0x08;
+	static const mask xdigit = 0x20;
+	static const mask alnum  = alpha | digit;
+	static const mask graph  = alnum | punct;
+};
+
+const size_t __ctype_table_size = 256;
+
+#ifndef _MSL_USING_MSL_C
+	extern ctype_base::mask __ctype_map[__ctype_table_size];
+#endif
+
+template <>
+class ctype<char>
+	: public locale::facet,
+	  public ctype_base
+{
+public:
+	typedef char char_type;
+
+	explicit ctype(const mask* tab = 0, bool del = false, size_t refs = 0);
+
+	bool is(mask m, char c) const
+	         {return static_cast<bool>(__table_[(unsigned char)c] & m);}
+
+	const char* is(const char* low, const char* high, mask* vec) const;
+	const char* scan_is (mask m, const char* low, const char* high) const;
+	const char* scan_not(mask m, const char* low, const char* high) const;
+
+	char        toupper(char c) const
+	               {return do_toupper(c);}
+	const char* toupper(char* low, const char* high) const
+	               {return do_toupper(low, high);}
+	char        tolower(char c) const
+	               {return do_tolower(c);}
+	const char* tolower(char* low, const char* high) const
+	               {return do_tolower(low, high);}
+
+	char        widen(char c) const
+	               {return do_widen(c);}
+	const char* widen(const char* low, const char* high, char* to) const
+	               {return do_widen(low, high, to);}
+	string      widen(const string& s) const  // hh 980803 added.  non-standard
+	               {return s;}
+	char        narrow(char c, char dfault) const
+	               {return do_narrow(c, dfault);}
+	const char* narrow(const char* low, const char* high, char dfault, char* to) const
+	               {return do_narrow(low, high, dfault, to);}
+
+	static locale::id id;
+	static const size_t table_size = __ctype_table_size;
+
+protected:
+	const mask*        table() const _MSL_THROW
+	                      {return __table_;}
+	static const mask* classic_table() _MSL_THROW
+	                      {return (const mask*)__ctype_map;}
+
+	virtual ~ctype();
+	virtual char        do_toupper(char c) const;
+	virtual const char* do_toupper(char* low, const char* high) const;
+	virtual char        do_tolower(char c) const;
+	virtual const char* do_tolower(char* low, const char* high) const;
+
+	virtual char        do_widen(char c) const;
+	virtual const char* do_widen(const char* low, const char* high, char* to) const;
+	virtual char        do_narrow(char c, char dfault) const;
+	virtual const char* do_narrow(const char* low, const char* high, char dfault, char* to) const;
+
+	const mask* __table_;
+	const unsigned char* __lower_map_;
+	const unsigned char* __upper_map_;
+	bool __owns_;
+};
+
+template <> struct __facet_traits<ctype<char> >
+	{static const bool is_standard = true;};
+
+#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+
+	template <class charT>
+	class ctype
+		: public locale::facet,
+		  public ctype_base
+	{
+	public:
+		typedef charT char_type;
+		explicit ctype(size_t refs = 0);
+
+		bool           is(mask m, charT c) const
+		                   {return do_is(m, c);}
+		const charT* is(const charT* low, const charT* high, mask* vec) const
+		                   {return do_is(low, high, vec);}
+		const charT* scan_is(mask m, const charT* low, const charT* high) const
+		                   {return do_scan_is(m, low, high);}
+		const charT* scan_not(mask m, const charT* low, const charT* high) const
+		                   {return do_scan_not(m, low, high);}
+		charT        toupper(charT c) const
+		                   {return do_toupper(c);}
+		const charT* toupper(charT* low, const charT* high) const
+		                   {return do_toupper(low, high);}
+		charT        tolower(charT c) const
+		                   {return do_tolower(c);}
+		const charT* tolower(charT* low, const charT* high) const
+		                   {return do_tolower(low, high);}
+
+		charT        widen(char c) const
+		                   {return do_widen(c);}
+		const char*    widen(const char* low, const char* high, charT* to) const
+		                   {return do_widen(low, high, to);}
+		basic_string<charT> widen(const string& s) const;  // hh 980803 added.  non-standard
+		char           narrow(charT c, char dfault) const
+		                   {return do_narrow(c, dfault);}
+		const charT* narrow(const charT* low, const charT* high, char dfault, char* to) const
+		                   {return do_narrow(low, high, dfault, to);}
+
+		static locale::id id;
+
+	protected:
+		virtual                ~ctype() {}
+		virtual bool           do_is(mask m, charT c) const;
+		virtual const charT* do_is(const charT* low, const charT* high, mask* vec) const;
+		virtual const charT* do_scan_is(mask m, const charT* low, const charT* high) const;
+		virtual const charT* do_scan_not(mask m, const charT* low, const charT* high) const;
+		virtual charT        do_toupper(charT) const;
+		virtual const charT* do_toupper(charT* low, const charT* high) const;
+		virtual charT        do_tolower(charT) const;
+		virtual const charT* do_tolower(charT* low, const charT* high) const;
+		virtual charT        do_widen(char) const;
+		virtual const char*    do_widen(const char* low, const char* high, charT* dest) const;
+		virtual char           do_narrow(charT, char dfault) const;
+		virtual const charT* do_narrow(const charT* low, const charT* high, char dfault, char* dest) const;
+
+		Metrowerks::range_map<charT, ctype_base::mask> __table_;
+		Metrowerks::range_map<charT, charT>          __lower_map_;
+		Metrowerks::range_map<charT, charT>          __upper_map_;
+	};
+
+	template<class charT>
+	locale::id ctype<charT>::id;
+
+	template <class charT> struct __facet_traits<ctype<charT> >
+		{static const bool is_standard = true;};
+
+	template<class charT>
+	ctype<charT>::ctype(size_t refs)
+		: locale::facet(refs)
+	{
+		__table_.insert(L'\x00', L'\x08', 0x01);
+		__table_.insert(L'\x09', L'\x0D', 0x02);
+		__table_.insert(L'\x0E', L'\x1F', 0x01);
+		__table_.insert(L'\x20',          0x04);
+		__table_.insert(L'\x21', L'\x2F', 0x08);
+		__table_.insert(L'\x30', L'\x39', 0x30);
+		__table_.insert(L'\x3A', L'\x40', 0x08);
+		__table_.insert(L'\x41', L'\x46', 0xA0);
+		__table_.insert(L'\x47', L'\x5A', 0x80);
+		__table_.insert(L'\x5B', L'\x60', 0x08);
+		__table_.insert(L'\x61', L'\x66', 0x60);
+		__table_.insert(L'\x67', L'\x7A', 0x40);
+		__table_.insert(L'\x7B', L'\x7E', 0x08);
+		__table_.insert(L'\x7F',          0x01);
+
+		__lower_map_.insert(L'\x0000', L'\xFFFF', L'\x0000', L'\xFFFF');
+		__lower_map_.insert(L'A', L'Z', L'a', L'z');
+
+		__upper_map_.insert(L'\x0000', L'\xFFFF', L'\x0000', L'\xFFFF');
+		__upper_map_.insert(L'a', L'z', L'A', L'Z');
+	}
+
+	template<class charT>
+	basic_string<charT>
+	ctype<charT>::widen(const string& s) const
+	{
+		basic_string<charT> result;
+		result.resize(s.size());
+		const char* s0 = s.c_str();
+		widen(s0, s0 + s.size(), &result[0]);
+		return result;
+	}
+
+	template<class charT>
+	inline
+	bool
+	ctype<charT>::do_is(mask m, charT c) const
+	{
+		return static_cast<bool>(__table_[c] & m);
+	}
+
+	template<class charT>
+	const charT*
+	ctype<charT>::do_is(const charT* low, const charT* high, mask* vec) const
+	{
+		const charT* p;
+		for (p = low; p < high; ++p, ++vec)
+			*vec = __table_[*p];
+		return high;
+	}
+
+	template<class charT>
+	const charT*
+	ctype<charT>::do_scan_is(mask m, const charT* low, const charT* high) const
+	{
+		const charT* p;
+		for (p = low; p < high; ++p)
+			if (__table_[*p] & m)
+				break;
+		return p;
+	}
+
+	template<class charT>
+	const charT*
+	ctype<charT>::do_scan_not(mask m, const charT* low, const charT* high) const
+	{
+		const charT* p;
+		for (p = low; p < high; ++p)
+			if (!(__table_[*p] & m))
+				break;
+		return p;
+	}
+
+	template<class charT>
+	inline
+	charT
+	ctype<charT>::do_toupper(charT c) const
+	{
+		return __upper_map_[c];
+	}
+
+	template<class charT>
+	const charT*
+	ctype<charT>::do_toupper(charT* low, const charT* high) const
+	{
+		for (;low < high; ++low)
+			*low = __upper_map_[*low];
+		return high;
+	}
+
+	template<class charT>
+	inline
+	charT
+	ctype<charT>::do_tolower(charT c) const
+	{
+		return __lower_map_[c];
+	}
+
+	template<class charT>
+	const charT*
+	ctype<charT>::do_tolower(charT* low, const charT* high) const
+	{
+		for (;low < high; ++low)
+			*low = __lower_map_[*low];
+		return high;
+	}
+
+	template<class charT>
+	inline
+	charT
+	ctype<charT>::do_widen(char c) const
+	{
+		return charT(c);
+	}
+
+	template<class charT>
+	const char*
+	ctype<charT>::do_widen(const char* low, const char* high, charT* dest) const
+	{
+		while (low < high)
+			*dest++ = charT(*low++);
+		return high;
+	}
+
+	template<class charT>
+	inline
+	char
+	ctype<charT>::do_narrow(charT c, char dfault) const
+	{
+		if (c >= 0x00FF)
+			return dfault;
+		return char(c);
+	}
+
+	template<class charT>
+	const charT*
+	ctype<charT>::do_narrow(const charT* low, const charT* high, char dfault, char* dest) const
+	{
+		while (low < high)
+			*dest++ = do_narrow(*low++, dfault);
+		return high;
+	}
+
+#endif  // _MSL_NO_WCHART_CPP_SUPPORT
+
+#endif  // _MSL_NO_LOCALE
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	} // namespace std
+#endif
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#pragma enumsalwaysint reset
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#pragma bool reset
+#endif
+
+#pragma options align=reset
+
+#endif // RC_INVOKED
+
+#endif  // _MSL_NO_IO
+
+#endif  // _CTYPE
+
+// hh 010228 Created
+// hh 010402 Removed 68K CMF support
+// hh 011005 Removed dependence on <ios> and moved __parse_a_word from here to <ios>

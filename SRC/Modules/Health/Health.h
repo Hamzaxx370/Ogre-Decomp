@@ -3,5 +3,7 @@
 //  Entry point of Health module
 // ============================================================================
 
-void ModuleInit_Health();
-void ModuleEnd_Health();
+#include "defines.h"
+
+VOID ModuleInit_Health();
+VOID ModuleEnd_Health();

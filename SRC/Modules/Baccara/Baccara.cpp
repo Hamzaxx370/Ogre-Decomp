@@ -6,10 +6,10 @@
 // Includes
 #include "Baccara.h"
 
-void ModuleInit_Baccara() {
+VOID ModuleInit_Baccara() {
 
 }
 
-void ModuleEnd_Baccara() {
+VOID ModuleEnd_Baccara() {
 
 }

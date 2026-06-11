@@ -3,5 +3,7 @@
 //  Entry point of CarChase module
 // ============================================================================
 
-void ModuleInit_CarChase();
-void ModuleEnd_CarChase();
+#include "defines.h"
+
+VOID ModuleInit_CarChase();
+VOID ModuleEnd_CarChase();

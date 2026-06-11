@@ -6,10 +6,10 @@
 // Includes
 #include "Health.h"
 
-void ModuleInit_Health() {
+VOID ModuleInit_Health() {
 
 }
 
-void ModuleEnd_Health() {
+VOID ModuleEnd_Health() {
 
 }

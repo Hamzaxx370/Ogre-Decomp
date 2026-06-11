@@ -3,5 +3,7 @@
 //  Entry point of Pachislot module
 // ============================================================================
 
-void ModuleInit_Pachislot();
-void ModuleEnd_Pachislot();
+#include "defines.h"
+
+VOID ModuleInit_Pachislot();
+VOID ModuleEnd_Pachislot();

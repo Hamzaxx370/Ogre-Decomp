@@ -12,7 +12,7 @@ options:
   rodata_string_guesser_level: 0
   global_vram_start : 0x00100000
   gp_value : 0x15b4f0
-  symbol_addrs_path: configs/symbol_addrs.txt
+  symbol_addrs_path: configs/main_symbols.txt
 segments:
   - [0, databin, ovl_header]
   - name: main

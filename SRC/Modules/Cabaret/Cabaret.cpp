@@ -6,10 +6,10 @@
 // Includes
 #include "Cabaret.h"
 
-void ModuleInit_Cabaret() {
+VOID ModuleInit_Cabaret() {
 
 }
 
-void ModuleEnd_Cabaret() {
+VOID ModuleEnd_Cabaret() {
 
 }

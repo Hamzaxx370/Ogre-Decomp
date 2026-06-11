@@ -3,5 +3,7 @@
 //  Entry point of BattingCenter module
 // ============================================================================
 
-void ModuleInit_BattingCenter();
-void ModuleEnd_BattingCenter();
+#include "defines.h"
+
+VOID ModuleInit_BattingCenter();
+VOID ModuleEnd_BattingCenter();

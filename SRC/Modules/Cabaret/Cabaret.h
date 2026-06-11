@@ -3,5 +3,7 @@
 //  Entry point of Cabaret module
 // ============================================================================
 
-void ModuleInit_Cabaret();
-void ModuleEnd_Cabaret();
+#include "defines.h"
+
+VOID ModuleInit_Cabaret();
+VOID ModuleEnd_Cabaret();

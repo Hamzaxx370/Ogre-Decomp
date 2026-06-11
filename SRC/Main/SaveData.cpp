@@ -10,7 +10,7 @@ INT CSystemData::GetFlag(DWORD arg1) {
     return this->unk10 & arg1;
 }
 
-void CSystemData::SetFlag(DWORD arg1, DWORD arg2) {
+VOID CSystemData::SetFlag(DWORD arg1, DWORD arg2) {
     if (arg2) {
         this->unk10 |= arg1;
     } else {
@@ -18,7 +18,7 @@ void CSystemData::SetFlag(DWORD arg1, DWORD arg2) {
     }
 }
 
-int CSystemData::Decode(LPVOID arg1) {
+INT CSystemData::Decode(LPVOID arg1) {
     INT     temp_s1;
     INT*    temp_s2;
     DWORD*  var_s2;
@@ -61,10 +61,10 @@ int CSystemData::Decode(LPVOID arg1) {
     
     memcpy(buf, var_s3, 0x17C);
     TmpBufUnLock();
-    var_s2 = (DWORD*)((int)buf + 0x178);
-    oldcrc = *(int*)((int)buf + 0x178);
-    *(int*)temp_s0 = 0;
-    *(u32*)((int)buf + 0x178) = 0;
+    var_s2 = (DWORD*)((INT)buf + 0x178);
+    oldcrc = *(INT*)((INT)buf + 0x178);
+    *(INT*)temp_s0 = 0;
+    *(u32*)((INT)buf + 0x178) = 0;
     *var_s2 = CalcCRC32(0x17C, buf);
     // CalcCRC(arg1);
     r = oldcrc == *var_s2;
@@ -105,7 +105,7 @@ INT CSystemData::Encode(LPVOID arg1) {
     var_s2 = (DWORD*)((INT)buf + 0x178);
     oldcrc = *(INT*)((INT)buf + 0x178);
     *(INT*)temp_s0 = 0;
-    *(DWORD*)((int)buf + 0x178) = 0;
+    *(DWORD*)((INT)buf + 0x178) = 0;
     *var_s2 = CalcCRC32(0x17C, buf);
 
     rseed1 = _Random();
@@ -132,7 +132,7 @@ INT CSystemData::Encode(LPVOID arg1) {
     }
     
     var_s3 = (char*)TmpBufLock();
-    *(int*)(buf + 0x74) = rseed2;
+    *(INT*)(buf + 0x74) = rseed2;
     _SeedRandom(rseed2);
     
     var_s4 = buf;
@@ -151,7 +151,7 @@ INT CSystemData::Encode(LPVOID arg1) {
 }
 
 UCHAR D_001658B8[];
-void CSystemData::SetBoolClear(void) {
+VOID CSystemData::SetBoolClear(VOID) {
     switch (D_001658B8[0]) {
         case 0:
         this->unk4 |= 0x1;
@@ -170,9 +170,9 @@ void CSystemData::SetBoolClear(void) {
     return;
 }
 
-INT CSystemData::GetBoolClear(void) {
+INT CSystemData::GetBoolClear(VOID) {
     UCHAR r ;
-    // r = (int)(BoolClearNormal()||BoolClearEasy()||BoolClearHard()||BoolClearSuperHard());
+    // r = (INT)(BoolClearNormal()||BoolClearEasy()||BoolClearHard()||BoolClearSuperHard());
     // if (BoolClearEasy()) {
     //     r = 0;
     // } else if (BoolClearNormal()) {
@@ -190,7 +190,7 @@ INT CSystemData::GetBoolClear(void) {
     // return (BoolClearEasy()||BoolClearNormal()||BoolClearHard()||BoolClearSuperHard()) != 0;
 }
 
-BOOL CSystemData::BoolKenkaMaster(void) {
+BOOL CSystemData::BoolKenkaMaster(VOID) {
     DWORD   i;
     
     for (i = 0; i <= 0x36; i++) {
@@ -211,17 +211,17 @@ INT CSystemData::GetUltimateBoxEstimate(DWORD arg1) {
     return this->unk78[arg1];
 }
 
-void CSystemData::SetUltimateBoxEstimate(DWORD arg1, eULTIMATE_BOX_ESTIMATE_RANK rank) {
+VOID CSystemData::SetUltimateBoxEstimate(DWORD arg1, eULTIMATE_BOX_ESTIMATE_RANK rank) {
     if (this->unk78[arg1] > rank) {
         this->unk78[arg1] = rank;
     }
 }
 
-void *CSystemData::GetSystemData(LPVOID arg1) {
+VOID *CSystemData::GetSystemData(LPVOID arg1) {
     memcpy(arg1, this, 0x17c);
 }
 
-void CSystemData::SetSystemData(LPVOID arg1) {
+VOID CSystemData::SetSystemData(LPVOID arg1) {
     if (arg1 != 0x0) {
         memcpy(this, arg1, 0x17c);
     }
@@ -243,8 +243,8 @@ void CSystemData::SetSystemData(LPVOID arg1) {
     }
 }
 
-void CSystemData::SystemDataReset(void) {
-    unsigned int i;
+VOID CSystemData::SystemDataReset(VOID) {
+    unsigned INT i;
     
     memset(this, 0, 0x17c);
     this->unk0 = 0x11;
@@ -263,10 +263,10 @@ void CSystemData::SystemDataReset(void) {
     return;
 }
 
-void CSystemData::get_subscenario_clear_info(DWORD *arg1, DWORD *arg2) {
+VOID CSystemData::get_subscenario_clear_info(DWORD *arg1, DWORD *arg2) {
     
 }
 
-void CSystemData::get_miniscenario_clear_info(DWORD *arg1, DWORD *arg2) {
+VOID CSystemData::get_miniscenario_clear_info(DWORD *arg1, DWORD *arg2) {
     
 }

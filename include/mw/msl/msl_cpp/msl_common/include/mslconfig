@@ -1,0 +1,256 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/11/01 18:36:46 $ 
+ * $Revision: 1.55 $ 
+ */
+
+// mslconfig
+
+#ifndef _MSLCONFIG
+#define _MSLCONFIG
+
+#define __MSL_CPP__ 0x7103  //  MSL C++ version identifier
+
+#if defined(__MWERKS__) && defined(__PALMOS_TRAPS__)
+
+	// Palm OS MSL C++ library has a different configuration
+	#include <mslconfig_Palm_OS>
+
+#elif defined(__MWERKS__) && defined(__MIPS_PSX2__)  	
+
+	// PS2 MSL C++ library has a different configuration
+	#include <mslconfig_PS2>
+
+#elif defined(__MWERKS__)
+
+    #include <mslGlobals.h>
+
+	// define _MSL_USING_MSL_C if using MSL for the C lib
+	#if __MACH__
+		#define _MSL_USING_GCC_C
+	#else
+	    #define _MSL_USING_MSL_C
+	#endif
+
+//	#define _MSL_USING_NAMESPACE  // uncomment if C in std (defined in C lib for Pro)
+//	#define _MSL_NO_CPP_NAMESPACE // uncomment if C++ in global namespace
+
+	#define _MSL_FORCE_ENUMS_ALWAYS_INT       0
+	#define _MSL_FORCE_ENABLE_BOOL_SUPPORT    1
+
+	#if !__option(exceptions)
+		// Recompile the C++ lib when flipping this switch
+		#define _MSL_NO_EXCEPTIONS
+	#endif
+	#if !__option(bool)
+		// Recompile the C++ lib when flipping this switch
+		#define _MSL_NO_BOOL
+	#endif
+	#if !__option(wchar_type)
+		// Recompile the C++ lib when flipping this switch
+		#define _MSL_NO_WCHART_LANG_SUPPORT
+	#endif
+
+	#ifdef _MSL_USING_GCC_C
+		#define _MSL_NO_WCHART_C_SUPPORT
+	#endif
+//	#define _MSL_NO_WCHART_CPP_SUPPORT
+
+	#ifndef _MSL_USING_MSL_C
+		// Recompile the C++ lib when flipping this switch
+		#define __MSL_LONGLONG_SUPPORT__
+		// Recompile the C++ lib when flipping this switch
+//		#define _MSL_CX_LIMITED_RANGE
+	#endif
+
+	#if __option(ARM_conform) && __dest_os == __win32_os
+		// Recompile the C++ lib when flipping this switch
+		#define _MSL_NO_EXPLICIT_FUNC_TEMPLATE_ARG
+	#endif
+	#if __dest_os == __win32_os
+		#ifndef NOMINMAX
+			#define NOMINMAX
+		#endif
+	#endif
+	#if _MWMT
+		// Recompile the C++ lib when flipping this switch
+		#define _MSL_MULTITHREAD
+	#endif
+
+	// _MSL_MINIMUM_NAMED_LOCALE when defined, turns off all of the named locale
+	// stuff except for "C" and "" (which will be the same as "C")
+//	#define _MSL_MINIMUM_NAMED_LOCALE
+
+	// _MSL_NO_LOCALE will create a C++ lib which does not have locale capability
+	// This will reduce the size of the lib for those apps not wishing to take
+	// advantage of this part of the C++ lib.  Code savings can be on the order of
+	// 50 to 80 Kb.  This switch should also be set when building the C++ lib as a
+	// shared lib.
+	// Recompile the C++ lib when flipping this switch
+//	#define _MSL_NO_LOCALE
+
+	// _MSL_EXTENDED_PRECISION_OUTP allows the output of floating point output to
+	// be printed with precision greater than DECIMAL_DIG.  With this option, an
+	// exact binary to decimal conversion can be performed (by bumping precision
+	// high enough).  The cost is about 5-6Kb in code size.
+	// Recompile the C++ lib when flipping this switch
+//	#define _MSL_EXTENDED_PRECISION_OUTP
+
+	// _MSL_NO_REFCOUNT_STRING reconfigures basic_string so that it is not refcounted.
+	// This may have code size savings.  It may or may not have performance benefits.
+	// Benefits of this switch are highly application dependent.
+	// Recompile the C++ lib when flipping this switch
+//	#define _MSL_NO_REFCOUNT_STRING
+	#ifdef _MSL_MULTITHREAD
+		#ifndef _MSL_NO_REFCOUNT_STRING
+			#define _MSL_NO_REFCOUNT_STRING
+		#endif
+	#endif
+
+	// _Inhibit_Container_Optimization, if uncommented will disable pointer
+	// specializations in the containers.  This may make debugging easier.
+	// Recompile the C++ lib when flipping this switch
+//	#define _Inhibit_Container_Optimization
+
+	// _MSL_NO_VECTOR_BOOL, if uncommented will disable the standard vector<bool>
+	// partial specialization.  You can still instantiate vector<bool>, but it will
+	// not have the space optimization of one bool per bit.  No need to recompile
+	// the C++ lib when flipping this switch, but do remake any precompiled headers
+	// you might be using.
+//	#define _MSL_NO_VECTOR_BOOL
+
+	// _Inhibit_Optimize_RB_bit is a space optimization that compacts the red/black
+	// flag with the parent pointer in each node.  By uncommenting this
+	// define, the optimization is turned off, and the red/black flag will
+	// be stored as an enum in each node.
+//	#define _Inhibit_Optimize_RB_bit
+
+//	#define _MSL_ARRAY_AUTO_PTR
+
+	// _MSL_USE_AUTO_PTR_96 will disable the standard auto_ptr and enable the
+	// version of auto_ptr that appeared in the Dec. '96 CD2.
+//	#define _MSL_USE_AUTO_PTR_96
+
+	// _MSL_EXTENDED_BINDERS adds defaulted template parameters to binder1st
+	// and binder2nd.  This allows client code to alter the type of the value
+	// that is stored.  This is especially useful when you want the binder to
+	// store the value by const reference instead of by value to save on an
+	// expensive copy construction.  This also allows for the use of polymorphic
+	// operators by specifying reference types for the operator.
+	#define _MSL_EXTENDED_BINDERS
+
+	#define _MSL_NO_TEMPLATE_FRIENDS
+//	#define _MSL_NO_THROW_SPECS
+//	#define _MSL_NO_EXPLICIT_FUNC_TEMPLATE_ARG
+//	#define _MSL_NO_PARTIAL_SPECIALIZATION
+//	#define _MSL_MUST_INLINE_MEMBER_TEMPLATE
+//	#define _MSL_NO_IO
+//	#define _MSL_NO_FILE_IO
+//	#define _MSL_NO_CONSOLE_IO
+//	#define _No_Floating_Point
+
+#endif
+
+//-----------------------------------------------------------------
+
+#ifndef _MSL_USING_NAMESPACE
+	#define _CSTD
+#else
+	#define _CSTD ::std
+#endif
+
+#ifdef _MSL_NO_CPP_NAMESPACE
+	#define _STD
+#else
+	#define _STD ::std
+#endif
+
+#ifdef _MSL_NO_BOOL
+	#ifndef bool
+		typedef unsigned char bool;
+	#endif
+	#ifndef true
+		#define false static_cast<unsigned char>(0)
+		#define true  static_cast<unsigned char>(1)
+	#endif
+#endif
+
+#if defined(_MSL_NO_WCHART_LANG_SUPPORT) && !defined(_MSL_NO_WCHART_CPP_SUPPORT)
+
+	#ifdef _MSL_USING_MSL_C
+		#include <wchar_t.h>
+	#elif defined(_MSL_USING_GCC_C)
+		#include <stddef.h>
+	#else
+		extern "C" {typedef unsigned short wchar_t;}
+	#endif
+
+#endif
+
+#ifdef _MSL_NO_THROW_SPECS
+	#define _MSL_THROW
+#else
+	#define _MSL_THROW throw()
+#endif
+
+#ifndef _MSL_NO_MEMBER_TEMPLATE
+	#define _MSL_REBIND(type) typename Allocator::rebind<type>::other
+#else
+	#define _MSL_REBIND(type) allocator<type>
+#endif
+
+#ifdef _MSL_NO_EXCEPTIONS
+
+	#ifndef _MSL_NO_CPP_NAMESPACE
+		namespace std {
+	#endif
+
+	void __msl_error(const char*);
+
+	#ifndef _MSL_NO_CPP_NAMESPACE
+		} // namespace std
+	#endif
+
+	// If you don't want MSL C++ to throw an exception, code your
+	// error handling code here as an inline method named _STD::__msl_error
+	// Two examples are below:
+
+	// Example 1 - bail
+	#include <cstdio>
+	#include <cstdlib>
+
+	inline
+	void
+	_STD::__msl_error(const char* str)
+	{
+		fprintf(stderr, str);
+		abort();
+	}
+
+/*
+	// Example 2 - ignore
+	inline
+	void
+	_STD::__msl_error(const char*)
+	{
+	}
+*/
+#endif
+
+#ifndef _MSL_IMP_EXP
+	#define _MSL_IMP_EXP
+#endif
+
+#ifndef _MSL_IMP_EXP_CPP
+	#define _MSL_IMP_EXP_CPP _MSL_IMP_EXP
+#endif
+
+#ifndef _MSL_IMP_EXP_RUNTIME
+	#define _MSL_IMP_EXP_RUNTIME _MSL_IMP_EXP
+#endif
+
+#endif // _MSLCONFIG
+
+// hh  990120 Created
+// blc 010817 Added <mslconfig.PalmOS.h> include

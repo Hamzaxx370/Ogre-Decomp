@@ -38,39 +38,39 @@ public:
 
     // Functions
     INT     GetFlag(DWORD);
-    void    SetFlag(DWORD, DWORD);
+    VOID    SetFlag(DWORD, DWORD);
     INT     Decode(LPVOID);
     INT     Encode(LPVOID);
     BOOL    CheckCRC(LPVOID arg1) {
         
     };
-    void CalcCRC(void *arg1) {
+    VOID CalcCRC(VOID *arg1) {
         UCHAR* buf = (UCHAR*)arg1;
-        *(int*)(buf + 0x74) = 0;
-        *(int*)(buf + 0x178) = 0;
-        *(int*)(buf + 0x178) = CalcCRC32(0x17C, buf);
+        *(INT*)(buf + 0x74) = 0;
+        *(INT*)(buf + 0x178) = 0;
+        *(INT*)(buf + 0x178) = CalcCRC32(0x17C, buf);
     };
-    void    SetBoolClear(void);
-    INT     GetBoolClear(void);
+    VOID    SetBoolClear(VOID);
+    INT     GetBoolClear(VOID);
     BOOL    BoolKenkaMaster();
     INT     GetUltimateBoxEstimate(DWORD);
-    void    SetUltimateBoxEstimate(DWORD, eULTIMATE_BOX_ESTIMATE_RANK);
+    VOID    SetUltimateBoxEstimate(DWORD, eULTIMATE_BOX_ESTIMATE_RANK);
     LPVOID  GetSystemData(LPVOID);
-    void    SetSystemData(LPVOID);
-    void    SystemDataReset(void);
-    void    get_subscenario_clear_info(DWORD*, DWORD*);
-    void    get_miniscenario_clear_info(DWORD*, DWORD*);
+    VOID    SetSystemData(LPVOID);
+    VOID    SystemDataReset(VOID);
+    VOID    get_subscenario_clear_info(DWORD*, DWORD*);
+    VOID    get_miniscenario_clear_info(DWORD*, DWORD*);
 
-    BOOL BoolClearEasy(void) {
+    BOOL BoolClearEasy(VOID) {
         return this->unk4 & 2;
     };
-    BOOL BoolClearNormal(void) {
+    BOOL BoolClearNormal(VOID) {
         return this->unk4 & 1;
     };
-    BOOL BoolClearHard(void) {
+    BOOL BoolClearHard(VOID) {
         return this->unk4 & 4;
     };
-    BOOL BoolClearSuperHard(void){
+    BOOL BoolClearSuperHard(VOID){
         return this->unk4 & 8;
     };
 };

@@ -6,10 +6,10 @@
 // Includes
 #include "UfoCatcher.h"
 
-void ModuleInit_UfoCatcher() {
+VOID ModuleInit_UfoCatcher() {
 
 }
 
-void ModuleEnd_UfoCatcher() {
+VOID ModuleEnd_UfoCatcher() {
 
 }

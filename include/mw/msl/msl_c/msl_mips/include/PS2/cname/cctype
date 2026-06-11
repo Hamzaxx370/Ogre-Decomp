@@ -1,0 +1,14 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/09/20 17:22:09 $
+ * $Revision: 1.1 $
+ */
+
+#ifndef _MSL_CCTYPE
+#define _MSL_CCTYPE		
+
+#include <ctype.h>
+
+
+#endif /* _MSL_CCTYPE */

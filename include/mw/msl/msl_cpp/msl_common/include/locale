@@ -1,0 +1,344 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/05/21 18:58:54 $ 
+ * $Revision: 1.20 $ 
+ */
+
+// locale
+
+#ifndef _LOCALE
+#define _LOCALE
+
+#include <mslconfig>
+
+#ifndef _MSL_NO_IO
+
+#include <localeimp>
+#include <ctype>
+#include <ctype_byname>
+#include <numfacet>
+#include <numpunct_byname>
+#include <collate>
+#include <codecvt>
+#include <codecvt_byname>
+#include <timefacet>
+#include <moneyfacet>
+#include <messagefacet>
+
+#ifndef RC_INVOKED
+
+#pragma options align=native
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#if _MSL_FORCE_ENUMS_ALWAYS_INT
+		#pragma enumsalwaysint on
+	#else
+		#pragma enumsalwaysint off
+	#endif
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#if _MSL_FORCE_ENABLE_BOOL_SUPPORT
+		#pragma bool on
+	#else
+		#pragma bool off
+	#endif
+#endif
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	namespace std {
+#endif
+
+#ifndef _MSL_NO_LOCALE
+
+// __locale_imp Implementation
+
+template <bool b>
+void
+__locale_imp<b>::init(const char* std_name)
+{
+#ifndef _MSL_MINIMUM_NAMED_LOCALE
+	if (name_ != "C")
+	{
+		replace(*(new ctype_byname<char>(std_name)));
+		replace(*(new codecvt_byname<char, char, mbstate_t>(std_name)));
+		replace(*(new numpunct_byname<char>(std_name)));
+		replace(*(new collate_byname<char>(std_name)));
+		replace(*(new timepunct_byname<char>(std_name)));
+		replace(*(new time_get_byname<char>(std_name)));
+		replace(*(new time_put_byname<char>(std_name)));
+		replace(*(new moneypunct_byname<char>(std_name)));
+		replace(*(new moneypunct_byname<char, true>(std_name)));
+		replace(*(new messages_byname<char>(std_name)));
+	#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+		replace(*(new ctype_byname<wchar_t>(std_name)));
+		replace(*(new codecvt_byname<wchar_t, char, mbstate_t>(std_name)));
+		replace(*(new numpunct_byname<wchar_t>(std_name)));
+		replace(*(new collate_byname<wchar_t>(std_name)));
+		replace(*(new timepunct_byname<wchar_t>(std_name)));
+		replace(*(new time_get_byname<wchar_t>(std_name)));
+		replace(*(new time_put_byname<wchar_t>(std_name)));
+		replace(*(new moneypunct_byname<wchar_t>(std_name)));
+		replace(*(new moneypunct_byname<wchar_t, true>(std_name)));
+		replace(*(new messages_byname<wchar_t>(std_name)));
+	#endif
+	}
+#else
+	std_name;
+#endif
+}
+
+template <bool b>
+__locale_imp<b>::__locale_imp(const locale& other, const locale& one, locale::category cat)
+{
+	*this = *other.imp_;
+	if (cat & locale::collate)
+	{
+		replace(_USE_FACET(_STD::collate<char>, one));
+		#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+			replace(_USE_FACET(_STD::collate<wchar_t>, one));
+		#endif
+	}
+	if (cat & locale::ctype)
+	{
+		replace(_USE_FACET(_STD::ctype<char>, one));
+		#ifndef _MSL_NO_EXPLICIT_FUNC_TEMPLATE_ARG
+			replace(use_facet<_STD::codecvt<char, char, mbstate_t> >(one));
+		#else
+			replace(use_facet(one, (_STD::codecvt<char, char, mbstate_t>*)0));
+		#endif
+		#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+			replace(_USE_FACET(_STD::ctype<wchar_t>, one));
+			#ifndef _MSL_NO_EXPLICIT_FUNC_TEMPLATE_ARG
+				replace(use_facet<_STD::codecvt<wchar_t, char, mbstate_t> >(one));
+			#else
+				replace(use_facet(one, (_STD::codecvt<wchar_t, char, mbstate_t>*)0));
+			#endif
+		#endif
+	}
+	if (cat & locale::monetary)
+	{
+		replace(_USE_FACET(_STD::moneypunct<char>, one));
+		#ifndef _MSL_NO_EXPLICIT_FUNC_TEMPLATE_ARG
+			replace(use_facet<_STD::moneypunct<char, true> >(one));
+		#else
+			replace(use_facet(one, (_STD::moneypunct<char, true>*)0));
+		#endif
+		replace(_USE_FACET(_STD::money_get<char>, one));
+		replace(_USE_FACET(_STD::money_put<char>, one));
+		#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+			replace(_USE_FACET(_STD::moneypunct<wchar_t>, one));
+			#ifndef _MSL_NO_EXPLICIT_FUNC_TEMPLATE_ARG
+				replace(use_facet<_STD::moneypunct<wchar_t, true> >(one));
+			#else
+				replace(use_facet(one, (_STD::moneypunct<wchar_t, true>*)0));
+			#endif
+			replace(_USE_FACET(_STD::money_get<wchar_t>, one));
+			replace(_USE_FACET(_STD::money_put<wchar_t>, one));
+		#endif
+	}
+	if (cat & locale::numeric)
+	{
+		replace(_USE_FACET(_STD::numpunct<char>, one));
+		replace(_USE_FACET(_STD::num_get<char>, one));
+		replace(_USE_FACET(_STD::num_put<char>, one));
+		#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+			replace(_USE_FACET(_STD::numpunct<wchar_t>, one));
+			replace(_USE_FACET(_STD::num_get<wchar_t>, one));
+			replace(_USE_FACET(_STD::num_put<wchar_t>, one));
+		#endif
+	}
+	if (cat & locale::time)
+	{
+		replace(_USE_FACET(_STD::timepunct<char>, one));
+		replace(_USE_FACET(_STD::time_get<char>, one));
+		replace(_USE_FACET(_STD::time_put<char>, one));
+		#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+			replace(_USE_FACET(_STD::timepunct<wchar_t>, one));
+			replace(_USE_FACET(_STD::time_get<wchar_t>, one));
+			replace(_USE_FACET(_STD::time_put<wchar_t>, one));
+		#endif
+	}
+	if (cat & locale::messages)
+	{
+		replace(_USE_FACET(_STD::messages<char>, one));
+		#ifndef _MSL_NO_WCHART_CPP_SUPPORT
+			replace(_USE_FACET(_STD::messages<wchar_t>, one));
+		#endif
+	}
+	if (other.imp_->name() != "*" && one.imp_->name() != "*")
+		name() = combine_names(other.imp_->name(), one.imp_->name(), cat);
+	else
+		name() = "*";
+}
+
+// locale Implementation
+
+// _lib.locale.convenience_, convenience interfaces:
+
+template <class charT>
+inline
+bool
+isspace(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::space, c);
+}
+
+template <class charT>
+inline
+bool
+isprint(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::print, c);
+}
+
+template <class charT>
+inline
+bool
+iscntrl(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::cntrl, c);
+}
+
+template <class charT>
+inline
+bool
+isupper(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::upper, c);
+}
+
+template <class charT>
+inline
+bool
+islower(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::lower, c);
+}
+
+template <class charT>
+inline
+bool
+isalpha(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::alpha, c);
+}
+
+template <class charT>
+inline
+bool
+isdigit(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::digit, c);
+}
+
+template <class charT>
+inline
+bool
+ispunct(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::punct, c);
+}
+
+template <class charT>
+inline
+bool
+isxdigit(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::xdigit, c);
+}
+
+template <class charT>
+inline
+bool
+isalnum(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::alnum, c);
+}
+
+template <class charT>
+inline
+bool
+isgraph(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).is(ctype_base::graph, c);
+}
+
+template <class charT>
+inline
+charT
+toupper(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).toupper(c);
+}
+
+template <class charT>
+inline
+charT
+tolower(charT c, const locale& loc)
+{
+	return _USE_FACET(ctype<charT>, loc).tolower(c);
+}
+
+#endif  // _MSL_NO_LOCALE
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	} // namespace std
+#endif
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#pragma enumsalwaysint reset
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#pragma bool reset
+#endif
+
+#pragma options align=reset
+
+#endif // RC_INVOKED
+
+#endif // _MSL_NO_IO
+
+#endif // _LOCALE
+
+// hh 980702 Modified num_put and num_get for void* to respect implementation dependent
+//           historic formattting conventions.  This involved insuring that void* was printed
+//           out in the format 0xXXXXXXXX with leading 0's if necessary.
+// hh 980713 Temporarily moved member templates into class definition to support compiler
+// hh 980802 Rewrote fixed_digits and scientific digits for more accurate printing
+// hh 980803 added _STD:: to disambiguate the facet collate from the enum
+// hh 980803 last arg was missing in a call to time_put::do_put.
+// hh 980811 changed unsigned long to unsigned long long putdec
+// hh 980811 Applied for-scoping neutral code
+// hh 980812 Fixed bug in inserting thousands seperators into floating point output
+// hh 980824 moved codecvt_byname out from under #ifdef MSIPL_WCHART
+// hh 980902 #ifdef'd out exception code when ndef MSIPL_EXCEPT
+// hh 980915 Modified file so that it would work without MSIPL_EXPLICIT_FUNC_TEMPLATE_ARG
+// hh 981018 Modified _BCD helper class to not round if it uses sprintf
+// hh 981111 Removed dependence on compiler support for default template args in string declarations
+// hh 981126 Changed pend from an iterator to a position in money_put
+// hh 981220 Added base class qualifiers to several typedefs in derived classes
+// hh 981220 Added class modifier to several friend declarations
+// hh 981220 Added typename to appropriate return types
+// hh 990109 Created a C lib independent ctype_base (suggested by bc).
+// hh 990120 changed name of MSIPL flags
+// hh 990215 removed _OVERLOAD_MONPUNCT_OFF and _OVERLOAD_NUMPUNCT_OFF, no longer needed
+// hh 990328 Fixed bug in floating point output rounding
+// hh 990911 Added special case for when # of money digits is <= frac_digits
+// hh 991015 Added missing trailing zeroes in fixed_digits.
+// hh 991101 Fixed adjustment bug for when right should be used.
+// hh 991213 Changed codecvt<wchar_t, char,...>::do_encoding to return 2
+// hh 991230 Added missing toupper and tolower global methods
+// hh 000130 Installed _MSL_NO_IO
+// hh 000130 Installed _MSL_IMP_EXP_CPP
+// hh 000130 Installed _MSL_EXTENDED_PRECISION_OUTP
+// hh 001011 Moved forward dclaration of _BCD so that it is visible when _MSL_NO_LOCALE
+// hh 001011 Removed duplicate default template arguments from facet forward declarations
+// hh 001011 Uninlined locale constructor taking other locale and category, gcc only
+// hh 001011 ifdefed out template<> for gcc
+// hh 001011 Fixed bug several places:  base class missing template arguments
+// hh 001011 Fixed typename bug in __putnumber
+// hh 010125 Rewrote
+// hh 010402 Removed 68K CMF support

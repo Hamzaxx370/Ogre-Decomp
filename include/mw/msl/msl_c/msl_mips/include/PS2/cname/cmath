@@ -1,0 +1,88 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/09/20 17:22:09 $
+ * $Revision: 1.1 $
+ */
+
+
+#ifndef _MSL_CMATH
+#define _MSL_CMATH
+
+
+#define __IEEE_LITTLE_ENDIAN  //// added for ps2 internal to gcc
+#define isfinite finite  //20000124
+								
+#define NAN 		  nanf()
+#define HUGE_VALF 	  infinityf()
+#define INFINITY	infinity()  //991201
+#define HUGE_VALL	  HUGE_VAL
+#define DECIMAL_DIG   17
+
+#ifdef _INT32
+#undef _INT32
+#endif
+#ifdef _UINT32
+#undef _UINT32
+#endif
+#if __MC68K__  
+typedef long _INT32 ;
+typedef unsigned long _UINT32 ;
+#else
+typedef int _INT32 ;
+typedef unsigned int _UINT32 ;
+#endif
+
+
+#if __option(little_endian)
+# define __HI(x) ( sizeof(x)==8 ? *(1+(_INT32*)&x) : (*(_INT32*)&x))
+# define __LO(x) (*(_INT32*)&x)
+# define __UHI(x) ( sizeof(x)==8 ? *(1+(_UINT32*)&x) : (*(_UINT32*)&x))
+# define __ULO(x) (*(_UINT32*)&x)
+#else
+# define __LO(x) ( sizeof(x)==8 ? *(1+(_INT32*)&x) : (*(_INT32*)&x))
+# define __HI(x) (*(_INT32*)&x)
+# define __ULO(x) ( sizeof(x)==8 ? *(1+(_UINT32*)&x) : (*(_UINT32*)&x))
+# define __UHI(x) (*(_UINT32*)&x)
+#endif
+
+#define signbit(x)((int)(__HI(x)&0x80000000)) //cc 010214
+#include <math.h>
+#ifdef __cplusplus //cc 991230
+      /*enable these for only C++*/
+    inline float abs(float x)
+       {return static_cast<float>(fabs(x));}
+    inline double abs(double x)
+       {return fabs(x);}
+    inline long double abs(long double x)
+       {return fabs(static_cast<double>(x));}
+#endif
+inline long double hypotl(long double x, long double y){
+	return hypot(static_cast<double>(x), static_cast<double>(y));}
+
+inline long double frexpl(long double x, int* exp){
+	return frexp(static_cast<double>(x), exp);}
+
+inline long double ldexpl(long double x, int exp){
+	return ldexp(static_cast<double>(x), exp);}
+	
+inline long double modfl(long double x, long double* iptr){
+			double iptrd;
+			long double result = modf(static_cast<double>(x), &iptrd);
+			*iptr = iptrd;
+			return result;}
+
+inline long double floorl(long double x){
+	return floor(static_cast<double>(x));}		
+
+inline long double log10l(long double x){
+    return log10(static_cast<double>(x));}
+
+inline long double powl(long double x, long double y){
+	return pow(static_cast<double>(x), static_cast<double>(y));}  //991201
+	
+#endif /* _MSL_CMATH */
+
+/* Change record: 
+ * cc  000804 added inline to ldexpl
+ */

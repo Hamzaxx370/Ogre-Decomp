@@ -1,0 +1,140 @@
+/* Metrowerks Standard Library
+ * Copyright © 1995-2001 Metrowerks Corporation.  All rights reserved.
+ *
+ * $Date: 2001/05/21 18:58:43 $ 
+ * $Revision: 1.9 $ 
+ */
+ 
+// hash_fun
+
+/*
+	WARNING - WARNING - WARNING
+	
+	This header is NON-STANDARD
+	
+	The classes herein are offered as extensions to the C++ standard.
+	They are marked as such by the namespace Metrowerks.
+*/
+
+#ifndef _HASH_FUN
+#define _HASH_FUN
+
+#include <mslconfig>
+#include <functional>
+#include <string>
+
+#ifndef RC_INVOKED
+
+#pragma options align=native
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#if _MSL_FORCE_ENUMS_ALWAYS_INT
+		#pragma enumsalwaysint on
+	#else
+		#pragma enumsalwaysint off
+	#endif
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#if _MSL_FORCE_ENABLE_BOOL_SUPPORT
+		#pragma bool on
+	#else
+		#pragma bool off
+	#endif
+#endif
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	namespace Metrowerks {
+#else
+	#ifndef Metrowerks
+		#define Metrowerks
+	#endif
+#endif
+
+template <class T>
+struct hash
+	: _STD::unary_function<T, _CSTD::size_t>
+{
+	_CSTD::size_t operator()(const T& key) const;
+};
+
+template <class T>
+inline
+_CSTD::size_t
+hash<T>::operator()(const T& key) const
+{
+	return static_cast<_CSTD::size_t>(key);
+}
+
+// std::basic_string specialization
+
+template <class charT, class traits, class Allocator>
+struct hash<_STD::basic_string<charT, traits, Allocator> >
+	: _STD::unary_function<_STD::basic_string<charT, traits, Allocator>, _CSTD::size_t>
+{
+	typedef _STD::basic_string<charT, traits, Allocator> string_type;
+	_CSTD::size_t operator()(const string_type& key) const;
+};
+
+template <class charT, class traits, class Allocator>
+_CSTD::size_t
+hash<_STD::basic_string<charT, traits, Allocator> >::operator()(const string_type& str) const
+{
+	_CSTD::size_t h = 0;
+	for(typename string_type::const_iterator p = str.begin(); p != str.end(); ++p)
+	{
+		h = (h << 4) + *p;
+		_CSTD::size_t g = h & 0xF0000000;
+		h ^= g | (g >> 24);
+	}
+	return h;
+}
+
+// const char* specialization
+
+template <>
+struct hash<const char*>
+	: _STD::unary_function<const char*, _CSTD::size_t>
+{
+	typedef const char* string_type;
+	_CSTD::size_t operator()(string_type key) const;
+};
+
+#ifndef __GNUC__
+template <>
+#endif
+inline
+_CSTD::size_t
+hash<const char*>::operator()(string_type p) const
+{
+	_CSTD::size_t h = 0;
+	for(; *p != 0; ++p)
+	{
+		h = (h << 4) + *p;
+		_CSTD::size_t g = h & 0xF0000000;
+		h ^= g | (g >> 24);
+	}
+	return h;
+}
+
+#ifndef _MSL_NO_CPP_NAMESPACE
+	} // namespace Metrowerks
+#endif
+
+#ifdef _MSL_FORCE_ENUMS_ALWAYS_INT
+	#pragma enumsalwaysint reset
+#endif
+
+#ifdef _MSL_FORCE_ENABLE_BOOL_SUPPORT
+	#pragma bool reset
+#endif
+
+#pragma options align=reset
+
+#endif // RC_INVOKED
+
+#endif  // _HASH_FUN
+
+// hh 991120 Recreated
+// hh 001011 ifdef'd out typename<> for gcc
+// hh 010402 Removed 68K CMF support
