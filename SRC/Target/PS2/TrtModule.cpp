@@ -102,9 +102,15 @@ void ReleaseTrtModule() {
 }
 
 INT CreateTrtModule(LPCSTR szArg) {
+    CTrtModule* pInstance;
+    
     CTrtModule::m_pInstance = &s_TrtModule;
-    sprintf(CTrtModule::m_pInstance->m_cProgRoot,s_szProgRoot);
-    CTrtModule::m_pInstance->m_eModuleID = (eMODULEID)-1;
+    
+    pInstance = CTrtModule::m_pInstance;
+    
+    sprintf(pInstance->m_cProgRoot,s_szProgRoot);
+    pInstance->m_eModuleID = (eMODULEID)-1;
+    
     return 0;
 }
 
@@ -120,7 +126,7 @@ INT CTrtModule::GetCRIFilePath(LPSTR szOut, LPCSTR szPath) {
     return 0;
 }
 
-extern INT ogre_strncmp(LPCSTR, LPCSTR, INT);
+extern bool ogre_strncmp(LPCSTR, LPCSTR, INT);
 
 INT CTrtModule::GetFilePath(LPSTR szOut, LPCSTR szPath) {
     CHAR    cBuf[0x100 + 1]; // 256 + NUL
@@ -137,16 +143,14 @@ INT CTrtModule::GetFilePath(LPSTR szOut, LPCSTR szPath) {
         }
     }
     
-    const char* fmt = "%s%s";
-    
     if (ogre_strncmp(cBuf, "MEDIA4", strlen("MEDIA4")) == 0) {
-        sprintf(szOut, fmt, s_szOgreVol4, &cBuf);
+        sprintf(szOut, "%s%s", s_szOgreVol4, &cBuf);
     } else if (ogre_strncmp(cBuf, "MEDIA3", strlen("MEDIA3")) == 0) {
-        sprintf(szOut, fmt, s_szOgreVol3, &cBuf);
+        sprintf(szOut, "%s%s", s_szOgreVol3, &cBuf);
     } else if (ogre_strncmp(cBuf, "MEDIA2", strlen("MEDIA2")) == 0) {
-        sprintf(szOut, fmt, s_szOgreVol2, &cBuf);
+        sprintf(szOut, "%s%s", s_szOgreVol2, &cBuf);
     } else {
-        sprintf(szOut, fmt, s_szOgreVol, &cBuf);
+        sprintf(szOut, "%s%s", s_szOgreVol, &cBuf);
     }
     return 0;
 }
