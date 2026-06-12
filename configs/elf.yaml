@@ -9,18 +9,18 @@ options:
   platform: ps2
   asm_path: asm
   src_path: SRC
-  rodata_string_guesser_level: 0
+  rodata_string_guesser_level: 1
   gp_value : 0x15b4f0
   symbol_addrs_path: configs/_main_symbols_ghidra.txt
   ld_script_path: build/linker/elf.ld
-  section_order: [".text", ".data", ".rodata", ".sbss", ".bss"]
+  section_order: [".text", ".data", ".rodata", ".sdata", ".sbss", ".bss"]
 segments:
   - [0, databin, elf_header]
   - name: main
     type: code
     start: 0x000200
     vram: 0x100000
-    bss_size: 0x14080
+    bss_size: 0x596880 # got this from _start
     subsegments:
     - [0x000208, asmtu, crt0]
     - [0x0003E0, asmtu, sdk/gcc_wrapper]
@@ -44,19 +44,24 @@ segments:
     - [0x030180, asmtu, Target/PS2/TrtModule]
     - [0x030640, asmtu, Main/SystemData]
     - [0x032480, data, sdk]
-    - [0x036EC0, data, Target/PS2/TrtModule]
+    - [0x036EC0, .data, Target/PS2/TrtModule]
     - [0x036f00, rodata, sdk]
-    - [0x03A0C0, rodata, Main/StartMain]
-    - [0x03A0D8, rodata, Target/PS2/TrtModule]
-    - [0x03A330, rodata, Main/SystemData]
-    - [0x03A480, asm, init]
-    - [0x03A590, rodata, ctors]
+    - [0x03A0C0, .rodata, Main/StartMain]
+    - [0x03A0D8, .rodata, Target/PS2/TrtModule]
+    - [0x03A330, .rodata, Main/SystemData]
+    - [0x03A480, asm, Target/PS2/TrtModule.init]
+    - [0x03A590, asm, Main/SystemData.init]
+    - [0x03A590, rodata, Target/PS2/TrtModule.ctors]
+    - [0x03A594, rodata, Main/SystemData.ctors]
     - [0x03A5A0, rodata, vtables]
     - [0x053690, rodata, ovl_groups]
-    - [0x053700, data, sdata]
+    - [0x053700, .sdata, Target/PS2/TrtModule]
+    - [0x053718, sdata, rest_sdata]
     - {vram: 0x156300, type: .sbss, name: Target/PS2/TrtModule}
     - {vram: 0x15630c, type: sbss, name: rest_sbss}
-    - {vram: 0x157A00, type: bss, name: rest_bss}
+    - {vram: 0x157A00, type: bss, name: sdk_bss}
+    - {vram: 0x165640, type: .bss, name: Target/PS2/TrtModule}
+    - {vram: 0x165760, type: bss, name: rest_bss}
     #- {vram: 0x156300, type: sbss, name: sbss}
     #- {vram: 0x157A00, type: bss, name: bss}
   - [0x56890]

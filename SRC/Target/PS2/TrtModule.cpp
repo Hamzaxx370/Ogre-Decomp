@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 //#include <eekernel.h> /* broken?? */
+/* temporary solution */
+extern "C" void FlushCache(int);
+#define WRITEBACK_DCACHE 0
 #include <mwUtils.h>
 
 #include "Target/TrtModule.h"
@@ -23,18 +26,18 @@
 #include "Modules\Roulette\Roulette.h"
 #include "Modules\UfoCatcher\UfoCatcher.h"
 
-LPCSTR szCDRom0 =  "cdrom0:\\";
-LPCSTR szOgreVol = "OGREVOL:";
-LPCSTR szOgreVol2 = "OGREVO2:";
-LPCSTR szOgreVol3 = "OGREVO3:";
-LPCSTR szOgreVol4 = "OGREVO4:";
+static LPCSTR s_szProgRoot =  "cdrom0:\\";
+static LPCSTR s_szOgreVol = "OGREVOL:";
+static LPCSTR s_szOgreVol2 = "OGREVO2:";
+static LPCSTR s_szOgreVol3 = "OGREVO3:";
+static LPCSTR s_szOgreVol4 = "OGREVO4:";
 
-static LPCSTR pMainModules[] =
+static LPCSTR s_szMainModules[] =
 {
     "MAIN.BIN;1"
 };
 
-static LPCSTR pSubModules[] = 
+static LPCSTR s_szSubModules[] = 
 {
     "Media4\\Module\\game.bin",
     "Media4\\Module\\ufocatcher.bin",
@@ -49,17 +52,17 @@ static LPCSTR pSubModules[] =
     "Media4\\Module\\blackjack.bin",
     NULL
 };
-static LPCSTR* g_pszModulePaths[] = 
+static LPCSTR* s_pszModulePaths[] = 
 {
     NULL,
-    pMainModules,
-    pSubModules,
+    s_szMainModules,
+    s_szSubModules,
     NULL
 };
 
 typedef const void (*ModuleFunc)();
 
-const ModuleFunc g_lpfnModuleInit[] = 
+static const ModuleFunc s_lpfnModuleInits[] = 
 {
     (ModuleFunc)ModuleInit_Game,
     (ModuleFunc)ModuleInit_UfoCatcher,
@@ -72,9 +75,10 @@ const ModuleFunc g_lpfnModuleInit[] =
     (ModuleFunc)ModuleInit_Baccara,
     (ModuleFunc)ModuleInit_Roulette,
     (ModuleFunc)ModuleInit_BlackJack,
+    (ModuleFunc)NULL
 };
 
-const ModuleFunc g_lpfnModuleEnd[] = 
+static const ModuleFunc s_lpfnModuleEnds[] = 
 {
     (ModuleFunc)ModuleEnd_Game,
     (ModuleFunc)ModuleEnd_UfoCatcher,
@@ -87,10 +91,11 @@ const ModuleFunc g_lpfnModuleEnd[] =
     (ModuleFunc)ModuleEnd_Baccara,
     (ModuleFunc)ModuleEnd_Roulette,
     (ModuleFunc)ModuleEnd_BlackJack,
+    (ModuleFunc)NULL
 };
 
 CTrtModule* CTrtModule::m_pInstance = NULL;
-CTrtModule s_TrtModule;
+static CTrtModule s_TrtModule;
 
 void ReleaseTrtModule() {
     return;
@@ -98,7 +103,7 @@ void ReleaseTrtModule() {
 
 INT CreateTrtModule(LPCSTR szArg) {
     CTrtModule::m_pInstance = &s_TrtModule;
-    sprintf(CTrtModule::m_pInstance->m_cProgRoot,"cdrom0:\\");
+    sprintf(CTrtModule::m_pInstance->m_cProgRoot,s_szProgRoot);
     CTrtModule::m_pInstance->m_eModuleID = (eMODULEID)-1;
     return 0;
 }
@@ -115,13 +120,7 @@ INT CTrtModule::GetCRIFilePath(LPSTR szOut, LPCSTR szPath) {
     return 0;
 }
 
-extern INT ogre_strcmp(LPSTR, LPSTR, INT);
-
-LPSTR szDumb = "%s%s";
-
-LPSTR szMedia4 = "MEDIA4";
-LPSTR szMedia3 = "MEDIA3";
-LPSTR szMedia2 = "MEDIA2";
+extern INT ogre_strncmp(LPCSTR, LPCSTR, INT);
 
 INT CTrtModule::GetFilePath(LPSTR szOut, LPCSTR szPath) {
     CHAR    cBuf[0x100 + 1]; // 256 + NUL
@@ -138,21 +137,23 @@ INT CTrtModule::GetFilePath(LPSTR szOut, LPCSTR szPath) {
         }
     }
     
-    if (ogre_strcmp(cBuf, szMedia4, strlen(szMedia4)) == 0) {
-        sprintf(szOut, szDumb, szOgreVol4, cBuf);
-    } else if (ogre_strcmp(cBuf, szMedia3, strlen(szMedia3)) == 0) {
-        sprintf(szOut, szDumb, szOgreVol3, cBuf);
-    } else if (ogre_strcmp(cBuf, szMedia2, strlen(szMedia2)) == 0) {
-        sprintf(szOut, szDumb, szOgreVol2, cBuf);
+    const char* fmt = "%s%s";
+    
+    if (ogre_strncmp(cBuf, "MEDIA4", strlen("MEDIA4")) == 0) {
+        sprintf(szOut, fmt, s_szOgreVol4, &cBuf);
+    } else if (ogre_strncmp(cBuf, "MEDIA3", strlen("MEDIA3")) == 0) {
+        sprintf(szOut, fmt, s_szOgreVol3, &cBuf);
+    } else if (ogre_strncmp(cBuf, "MEDIA2", strlen("MEDIA2")) == 0) {
+        sprintf(szOut, fmt, s_szOgreVol2, &cBuf);
     } else {
-        sprintf(szOut, szDumb, szOgreVol, cBuf);
+        sprintf(szOut, fmt, s_szOgreVol, &cBuf);
     }
     return 0;
 }
 
 
 INT CTrtModule::GetOverlayFilePath(LPSTR szOut, eMODULEID eModuleId, DWORD dwNameId) {
-    sprintf(szOut, "%s", g_pszModulePaths[eModuleId][dwNameId]);
+    sprintf(szOut, "%s", s_pszModulePaths[eModuleId][dwNameId]);
     return 0;
 }
 
@@ -166,15 +167,15 @@ INT CTrtModule::SetOverlay(DWORD dwArg1, eMODULEID dwArg2, LPVOID lpArg, DWORD d
     if (dwArg1 == 2) {
         temp_v1 = m_eModuleID;
         if ((temp_v1 != dwArg2) && (temp_v1 != -1)) { /* ?????? */
-            g_lpfnModuleEnd[temp_v1]();
+            s_lpfnModuleEnds[temp_v1]();
         }
     }
     temp_s1 = mwGetGroupAddress(dwArg1);
     memcpy(temp_s1, lpArg, temp_s0);
-    //FlushCache(WRITEBACK_DCACHE);
+    FlushCache(WRITEBACK_DCACHE);
     mwOverlayInit(temp_s1,  temp_s0);
     if (dwArg1 == 2) {
-        g_lpfnModuleInit[dwArg2]();
+        s_lpfnModuleInits[dwArg2]();
         m_eModuleID = dwArg2;
     }
     return 0;
@@ -201,14 +202,14 @@ BOOL CTrtModule::LoadOverlay(eMODULEID mId, DWORD arg2) {
     CHAR    ovlPath [0x100 + 1]; // 0x100 + NUL
     
     ovlAddr = mwGetGroupAddress(mId);
-    sprintf(ovlPath, "%s", g_pszModulePaths[mId][arg2]); // maybe -1?
+    sprintf(ovlPath, "%s", s_pszModulePaths[mId][arg2]); // maybe -1?
     sprintf(finalPath, "%s%s", m_cProgRoot, ovlPath);
-    //FlushCache(WRITEBACK_DCACHE);
+    FlushCache(WRITEBACK_DCACHE);
 
     wasLoaded = test(finalPath, ovlAddr, loadSize);
     
     if (mId == 0x2) {
-        g_lpfnModuleInit[arg2]();
+        s_lpfnModuleInits[arg2]();
     }
     
     g_dwOverlayThing = 0;
