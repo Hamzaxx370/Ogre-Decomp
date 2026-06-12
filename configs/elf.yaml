@@ -13,6 +13,7 @@ options:
   gp_value : 0x15b4f0
   symbol_addrs_path: configs/_main_symbols_ghidra.txt
   ld_script_path: build/linker/elf.ld
+  section_order: [".text", ".data", ".rodata", ".sbss", ".bss"]
 segments:
   - [0, databin, elf_header]
   - name: main
@@ -53,9 +54,9 @@ segments:
     - [0x03A5A0, rodata, vtables]
     - [0x053690, rodata, ovl_groups]
     - [0x053700, data, sdata]
-    #- {vram: 0x156300, type: .sbss, Target/PS2/TrtModule}
-    #- {vram: 0x15630c, type: .sbss, rest_sbss}
-    #- {vram: 0x157A00, type: .bss, name: rest_bss}
-    - {vram: 0x156300, type: sbss, name: sbss}
-    - {vram: 0x157A00, type: bss, name: bss}
+    - {vram: 0x156300, type: .sbss, name: Target/PS2/TrtModule}
+    - {vram: 0x15630c, type: sbss, name: rest_sbss}
+    - {vram: 0x157A00, type: bss, name: rest_bss}
+    #- {vram: 0x156300, type: sbss, name: sbss}
+    #- {vram: 0x157A00, type: bss, name: bss}
   - [0x56890]

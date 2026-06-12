@@ -48,7 +48,8 @@ SECTIONS = [
     (".s",        ""),
     (".data.s",   "data/"),
     (".rodata.s", "data/"),
-    (".bss.s",    "data/"),
+#    (".sbss.s",   "data/"),
+#    (".bss.s",    "data/"),
 ]
 
 def run_cmd(cmd: list[str]) -> bool:
