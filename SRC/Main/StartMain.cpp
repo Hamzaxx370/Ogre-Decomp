@@ -26,7 +26,7 @@ int main(int argc,char** argv) {
     /* init mw and modules */
     mwInit();
     CreateTrtModule(argv[0]);
-    CTrtModule::m_pInstance->LoadOverlay(eMODULEID_GROUP_1, 0); /* load main.bin? */
+    CTrtModule::m_pInstance->LoadOverlay(eMODULEID_MAIN, MODULE_MAIN); /* load main.bin? */
     ogre_main(); /* game initialization/loop/destruction */
     ReleaseTrtModule();
     mwExit();

@@ -168,7 +168,7 @@ INT CTrtModule::SetOverlay(DWORD dwArg1, eMODULEID dwArg2, LPVOID lpArg, DWORD d
     INT     temp_v1;
 
     temp_s0 = dwArg3;
-    if (dwArg1 == 2) {
+    if (dwArg1 == eMODULEID_SUB) {
         temp_v1 = m_eModuleID;
         if ((temp_v1 != dwArg2) && (temp_v1 != -1)) { /* ?????? */
             s_lpfnModuleEnds[temp_v1]();
@@ -178,7 +178,7 @@ INT CTrtModule::SetOverlay(DWORD dwArg1, eMODULEID dwArg2, LPVOID lpArg, DWORD d
     memcpy(temp_s1, lpArg, temp_s0);
     FlushCache(WRITEBACK_DCACHE);
     mwOverlayInit(temp_s1,  temp_s0);
-    if (dwArg1 == 2) {
+    if (dwArg1 == eMODULEID_SUB) {
         s_lpfnModuleInits[dwArg2]();
         m_eModuleID = dwArg2;
     }
@@ -212,7 +212,7 @@ BOOL CTrtModule::LoadOverlay(eMODULEID mId, DWORD arg2) {
 
     wasLoaded = test(finalPath, ovlAddr, loadSize);
     
-    if (mId == 0x2) {
+    if (mId == eMODULEID_SUB) {
         s_lpfnModuleInits[arg2]();
     }
     

@@ -1,10 +1,17 @@
-// ============================================================================
-//  SaveData.cpp
-//  Implementation of CSystemData
-// ============================================================================
+/*
+    SaveData.cpp
+*/
 
-// Includes
-#include "SaveData.h"
+#include <string.h>
+
+#include "Main/SaveData.h"
+#include "Main/machine.h"
+
+#include "Target/TrtSound.h"
+
+/* no place for those rn */ 
+extern void _SeedRandom(DWORD);
+extern DWORD _Random();
 
 INT CSystemData::GetFlag(DWORD arg1) {
     return this->unk10 & arg1;
@@ -34,7 +41,7 @@ INT CSystemData::Decode(LPVOID arg1) {
     UCHAR*  temp_s0;
     INT     r;
 
-    temp_s0 = (u8*)&t->unk74;
+    temp_s0 = (UCHAR*)&t->unk74;
     _SeedRandom(t->unk74);
     var_s3_1 = (char*)TmpBufLock();
 
@@ -48,7 +55,7 @@ INT CSystemData::Decode(LPVOID arg1) {
         // } else {
         //     var_s3[i] = buf[i] ^ ((_Random() % 255) + 1);
         // }
-        if ((u32)&t->unk74 <= (u32)var_s4 && var_s4 < temp_s0+4) {
+        if ((DWORD)&t->unk74 <= (DWORD)var_s4 && var_s4 < temp_s0+4) {
             *var_s3 = *var_s4;
         } else if (buf <= var_s4 && var_s4 < buf+4) {
             *var_s3 = *var_s4;
@@ -64,7 +71,7 @@ INT CSystemData::Decode(LPVOID arg1) {
     var_s2 = (DWORD*)((INT)buf + 0x178);
     oldcrc = *(INT*)((INT)buf + 0x178);
     *(INT*)temp_s0 = 0;
-    *(u32*)((INT)buf + 0x178) = 0;
+    *(DWORD*)((INT)buf + 0x178) = 0;
     *var_s2 = CalcCRC32(0x17C, buf);
     // CalcCRC(arg1);
     r = oldcrc == *var_s2;
@@ -127,7 +134,7 @@ INT CSystemData::Encode(LPVOID arg1) {
 
     rseed2 = 0;
     for (i = 0; i < 0x20; i++) {
-        u32 x = rseed & 0x1 << unkbuf[i];
+        DWORD x = rseed & 0x1 << unkbuf[i];
         rseed2 += ((x) >> unkbuf[i]) << i;
     }
     
@@ -148,6 +155,8 @@ INT CSystemData::Encode(LPVOID arg1) {
     
     memcpy(buf, var_s3, 0x17C);
     TmpBufUnLock();
+    
+    return 0;
 }
 
 UCHAR D_001658B8[];
@@ -219,6 +228,7 @@ VOID CSystemData::SetUltimateBoxEstimate(DWORD arg1, eULTIMATE_BOX_ESTIMATE_RANK
 
 VOID *CSystemData::GetSystemData(LPVOID arg1) {
     memcpy(arg1, this, 0x17c);
+    return 0;
 }
 
 VOID CSystemData::SetSystemData(LPVOID arg1) {
@@ -226,30 +236,30 @@ VOID CSystemData::SetSystemData(LPVOID arg1) {
         memcpy(this, arg1, 0x17c);
     }
     
-    if (this->unk8 & 0x8) {
-        D_00157614->SetWideTV(WIDETV_6);
+    if (m_dwClearFlag & 0x8) {
+        //D_00157614->SetWideTV(WIDETV_6);
     } else {
-        D_00157614->SetWideTV(WIDETV_0);
+        //D_00157614->SetWideTV(WIDETV_0);
     }
     
-    if (this->unk8 & 0x80) {
-        D_00157188->SetOutput(SND_OUTPUT_2);
+    if (m_dwClearFlag & 0x80) {
+        CTrtSound::m_pInstance->SetOutput(SND_OUTPUT_2);
     }
-    else if (this->unk8 & 0x2) {
-        D_00157188->SetOutput(SND_OUTPUT_1);
+    else if (m_dwClearFlag & 0x2) {
+        CTrtSound::m_pInstance->SetOutput(SND_OUTPUT_1);
     }
     else {
-        D_00157188->SetOutput(SND_OUTPUT_0);
+        CTrtSound::m_pInstance->SetOutput(SND_OUTPUT_0);
     }
 }
 
 VOID CSystemData::SystemDataReset(VOID) {
-    unsigned INT i;
+    DWORD i;
     
     memset(this, 0, 0x17c);
     this->unk0 = 0x11;
-    this->unk8 = 0x67;
-    this->unk8 = (u8)this->unk8 | 0x100;
+    this->m_dwClearFlag = 0x67;
+    this->m_dwClearFlag = (UCHAR)this->m_dwClearFlag | 0x100;
     this->unk20 = 0x7fffffff;
 
     for (i = 0; i < 0x40; i++) {

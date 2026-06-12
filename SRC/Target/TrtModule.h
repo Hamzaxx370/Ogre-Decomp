@@ -11,9 +11,12 @@
 
 enum eMODULEID
 {
-    eMODULEID_GROUP_1 = 1,
+    eMODULEID_MAIN = 1,
+    eMODULEID_SUB = 2,
     eMODULEID_FORCE_DWORD = 0xFFFFFFFF,
 };
+
+#define MODULE_MAIN 0
 
 class CTrtModule 
 {

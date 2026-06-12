@@ -8,5 +8,7 @@
 #include "defines.h"
 
 void ogre_main();
+void* TmpBufLock();
+void TmpBufUnLock();
 
 #endif
