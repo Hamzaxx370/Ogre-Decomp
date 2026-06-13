@@ -8,8 +8,23 @@
 // Includes
 #include "defines.h"
 
-enum eULTIMATE_BOX_ESTIMATE_RANK {
+struct sdData {
+    DWORD dwData[0x11b8 / 4];
+};
 
+class CSaveData {
+public:
+    sdData m_SaveData;
+    sdData m_SaveBack;
+    
+    /* TODO:
+        figure out the inlining here.
+    */
+    CSaveData () {};
+};
+
+enum eULTIMATE_BOX_ESTIMATE_RANK {
+    eULTIMATE_BOX_ESTIMATE_RANK_FORCE_DWORD = 0xFFFFFFFF
 };
 
 extern DWORD CalcCRC32(DWORD, UCHAR*);
@@ -50,7 +65,7 @@ public:
     BOOL   BoolKenkaMaster();
     INT    GetUltimateBoxEstimate(DWORD);
     VOID   SetUltimateBoxEstimate(DWORD, eULTIMATE_BOX_ESTIMATE_RANK);
-    LPVOID GetSystemData(LPVOID);
+    VOID GetSystemData(LPVOID);
     VOID   SetSystemData(LPVOID);
     VOID   SystemDataReset(VOID);
     VOID   get_subscenario_clear_info(DWORD*, DWORD*);
@@ -68,6 +83,14 @@ public:
     BOOL BoolClearSuperHard(VOID){
         return m_dwClearFlag & 8;
     };
+    
+    /* TODO:
+        figure out the inlining here.
+    */
+    CSystemData() {SystemDataReset();};
 };
+
+extern CSaveData   g_SaveData;
+extern CSystemData g_SystemData;
 
 #endif

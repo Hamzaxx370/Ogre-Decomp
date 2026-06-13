@@ -5,13 +5,17 @@
 #include <string.h>
 
 #include "Main/SaveData.h"
-#include "Main/machine.h"
 
+#include "Main/machine.h"
+#include "Main/WideTVManager.h"
 #include "Target/TrtSound.h"
 
 /* no place for those rn */ 
 extern void _SeedRandom(DWORD);
 extern DWORD _Random();
+
+CSaveData g_SaveData;
+CSystemData g_SystemData;
 
 INT CSystemData::GetFlag(DWORD arg1) {
     return this->unk10 & arg1;
@@ -226,9 +230,8 @@ VOID CSystemData::SetUltimateBoxEstimate(DWORD arg1, eULTIMATE_BOX_ESTIMATE_RANK
     }
 }
 
-VOID *CSystemData::GetSystemData(LPVOID arg1) {
+VOID CSystemData::GetSystemData(LPVOID arg1) {
     memcpy(arg1, this, 0x17c);
-    return 0;
 }
 
 VOID CSystemData::SetSystemData(LPVOID arg1) {
@@ -237,9 +240,9 @@ VOID CSystemData::SetSystemData(LPVOID arg1) {
     }
     
     if (m_dwClearFlag & 0x8) {
-        //D_00157614->SetWideTV(WIDETV_6);
+        g_lpActWideTVMan->SetWideTV(WIDETV_6);
     } else {
-        //D_00157614->SetWideTV(WIDETV_0);
+        g_lpActWideTVMan->SetWideTV(WIDETV_0);
     }
     
     if (m_dwClearFlag & 0x80) {
@@ -253,7 +256,7 @@ VOID CSystemData::SetSystemData(LPVOID arg1) {
     }
 }
 
-VOID CSystemData::SystemDataReset(VOID) {
+inline VOID CSystemData::SystemDataReset(VOID) {
     DWORD i;
     
     memset(this, 0, 0x17c);
