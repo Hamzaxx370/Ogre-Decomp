@@ -5,9 +5,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
-                "${workspaceFolder}/include/sce/ee/include",
-                "${workspaceFolder}/include/sce/iop/include",
-                "${workspaceFolder}/include/sce/common/include",
+                "C:/usr/local/sce/ee/include",
+                "C:/usr/local/sce/iop/include",
+                "C:/usr/local/sce/common/include",
                 "c:/Program Files (x86)/Metrowerks/CodeWarrior/PS2 Support/Runtime/Sources/Headers",
                 "c:/Program Files (x86)/Metrowerks/CodeWarrior/PS2 Support/Msl/MSL_C++/MSL_Common/Include"
             ],

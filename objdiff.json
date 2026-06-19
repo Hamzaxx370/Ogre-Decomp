@@ -7,17 +7,17 @@
   "build_target": true,
   "units": [
     {
-      "name": "SRC/Main/StartMain.cpp",
+      "name": "src/Ogre/SRC/Main/StartMain.cpp",
       "target_path": "build/obj/StartMain.o",
       "base_path": "build/match/StartMain.o"
     },
     {
-      "name": "SRC/Target/PS2/TrtModule.cpp",
+      "name": "src/Ogre/SRC/Target/PS2/TrtModule.cpp",
       "target_path": "build/obj/TrtModule.o",
       "base_path": "build/match/TrtModule.o"
     },
     {
-      "name": "SRC/Main/SaveData.cpp",
+      "name": "src/Ogre/SRC/Main/SaveData.cpp",
       "target_path": "build/obj/SaveData.o",
       "base_path": "build/match/SaveData.o"
     }

@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT    = Path(__file__).resolve().parent.parent
 CONFIG  = ROOT / "objdiff.json"
-SRC_DIR = ROOT / "SRC"
+SRC_DIR = ROOT / "src"
 OUT_DIR = ROOT / "build" / "match"
 
 # ---------------------------------------------------------------------------
@@ -40,10 +40,11 @@ MWCC_FLAGS = [
     "-Cpp_exceptions", "off",
     "-I-",
     f"-I{ROOT / 'include' / 'mw'  / 'headers'}",
-    f"-I{ROOT / 'include' / 'sce' / 'ee'     / 'include'}",
-    f"-I{ROOT / 'include' / 'sce' / 'iop'    / 'include'}",
-    f"-I{ROOT / 'include' / 'sce' / 'common' / 'include'}",
-    f"-I{SRC_DIR}",
+    f"-IC:/usr/local/sce/ee/include",
+    f"-IC:/usr/local/sce/iop/include",
+    f"-IC:/usr/local/sce/common/include",
+    f"-I{SRC_DIR / 'Ogre' / 'SRC'}",
+    #f"-I{SRC_DIR}",
 ]
 
 # ---------------------------------------------------------------------------
