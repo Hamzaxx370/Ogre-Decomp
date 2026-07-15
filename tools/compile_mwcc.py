@@ -38,6 +38,7 @@ MWCC_FLAGS = [
     "-RTTI", "off",
     "-sym",  "on",
     "-Cpp_exceptions", "off",
+    "-D__GNUC__",
     "-I-",
     f"-I{ROOT / 'include' / 'mw'  / 'headers'}",
     f"-IC:/usr/local/sce/common/include",
