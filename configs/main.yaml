@@ -7,7 +7,7 @@ options:
   compiler: MWCCPS2
   find_file_boundaries: False
   platform: ps2
-  asm_path: asm/main
+  asm_path: asm/ogre/src/main
   src_path: SRC
   rodata_string_guesser_level: 0
   global_vram_start : 0x00100000

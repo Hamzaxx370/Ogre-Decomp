@@ -5,3 +5,5 @@ build/
 undefined_funcs_auto.txt 
 undefined_syms_auto.txt
 __pycache__
+objdiff-cli-windows-x86_64.exe
+objdiff-cli-windows-x86.exe

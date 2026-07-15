@@ -3,10 +3,10 @@
     comment: no interface?
 */
 
+#include <mwUtils.h>
 #include <stdio.h>
 #include <string.h>
 #include <eekernel.h>
-#include <mwUtils.h>
 
 #include "Target/TrtModule.h"
 

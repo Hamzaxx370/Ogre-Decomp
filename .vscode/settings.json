@@ -2,5 +2,8 @@
     "cmake.configureSettings": {
         "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/cmake/ps2-mwcc.cmake"
     },
-    "cmake.generator": "Ninja"
+    "cmake.generator": "Ninja",
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }

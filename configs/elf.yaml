@@ -7,13 +7,14 @@ options:
   compiler: MWCCPS2
   find_file_boundaries: False
   platform: ps2
-  asm_path: asm
+  asm_path: asm/ogre/src
   src_path: SRC
   rodata_string_guesser_level: 1
   gp_value : 0x15b4f0
   symbol_addrs_path: configs/_main_symbols_ghidra.txt
   ld_script_path: build/linker/elf.ld
   section_order: [".text", ".data", ".rodata", ".sdata", ".sbss", ".bss"]
+  asm_nonmatching_label_macro: None
 segments:
   - [0, databin, elf_header]
   - name: main

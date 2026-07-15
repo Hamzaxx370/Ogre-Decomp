@@ -40,9 +40,10 @@ MWCC_FLAGS = [
     "-Cpp_exceptions", "off",
     "-I-",
     f"-I{ROOT / 'include' / 'mw'  / 'headers'}",
-    f"-IC:/usr/local/sce/ee/include",
-    f"-IC:/usr/local/sce/iop/include",
     f"-IC:/usr/local/sce/common/include",
+    f"-IC:/usr/local/sce/ee/include",
+    f"-IC:/usr/local/sce/ee/gcc/lib/gcc-lib/ee/2.95.3/include",
+    f"-IC:/usr/local/sce/ee/gcc/ee/include",
     f"-I{SRC_DIR / 'Ogre' / 'SRC'}",
     #f"-I{SRC_DIR}",
 ]
